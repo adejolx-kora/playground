@@ -32,9 +32,9 @@ const sections: Array<MenuSection> = [
   {
     label: "Interactions",
     items: [
-      { label: "Home", url: "/" },
-      { label: "Balances", url: "/balances" },
-      { label: "Customers", url: "/customers" },
+      { label: "Hover", url: "/interactions/hover" },
+      { label: "View transitions", url: "/interactions/view-transitions" },
+      { label: "Input", url: "/interactions/input" },
     ],
   },
   {

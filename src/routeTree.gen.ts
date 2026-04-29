@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ViewsIndexRouteImport } from './routes/views.index'
 import { Route as ViewsOnboardingRouteImport } from './routes/views.onboarding'
 import { Route as ViewsLoginRouteImport } from './routes/views.login'
+import { Route as InteractionsViewTransitionsRouteImport } from './routes/interactions.view-transitions'
+import { Route as InteractionsInputRouteImport } from './routes/interactions.input'
+import { Route as InteractionsHoverRouteImport } from './routes/interactions.hover'
 
 const ViewsIndexRoute = ViewsIndexRouteImport.update({
   id: '/views/',
@@ -28,32 +31,79 @@ const ViewsLoginRoute = ViewsLoginRouteImport.update({
   path: '/views/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InteractionsViewTransitionsRoute =
+  InteractionsViewTransitionsRouteImport.update({
+    id: '/interactions/view-transitions',
+    path: '/interactions/view-transitions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const InteractionsInputRoute = InteractionsInputRouteImport.update({
+  id: '/interactions/input',
+  path: '/interactions/input',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InteractionsHoverRoute = InteractionsHoverRouteImport.update({
+  id: '/interactions/hover',
+  path: '/interactions/hover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/interactions/hover': typeof InteractionsHoverRoute
+  '/interactions/input': typeof InteractionsInputRoute
+  '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
   '/views/': typeof ViewsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/interactions/hover': typeof InteractionsHoverRoute
+  '/interactions/input': typeof InteractionsInputRoute
+  '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
   '/views': typeof ViewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/interactions/hover': typeof InteractionsHoverRoute
+  '/interactions/input': typeof InteractionsInputRoute
+  '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
   '/views/': typeof ViewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/views/login' | '/views/onboarding' | '/views/'
+  fullPaths:
+    | '/interactions/hover'
+    | '/interactions/input'
+    | '/interactions/view-transitions'
+    | '/views/login'
+    | '/views/onboarding'
+    | '/views/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/views/login' | '/views/onboarding' | '/views'
-  id: '__root__' | '/views/login' | '/views/onboarding' | '/views/'
+  to:
+    | '/interactions/hover'
+    | '/interactions/input'
+    | '/interactions/view-transitions'
+    | '/views/login'
+    | '/views/onboarding'
+    | '/views'
+  id:
+    | '__root__'
+    | '/interactions/hover'
+    | '/interactions/input'
+    | '/interactions/view-transitions'
+    | '/views/login'
+    | '/views/onboarding'
+    | '/views/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  InteractionsHoverRoute: typeof InteractionsHoverRoute
+  InteractionsInputRoute: typeof InteractionsInputRoute
+  InteractionsViewTransitionsRoute: typeof InteractionsViewTransitionsRoute
   ViewsLoginRoute: typeof ViewsLoginRoute
   ViewsOnboardingRoute: typeof ViewsOnboardingRoute
   ViewsIndexRoute: typeof ViewsIndexRoute
@@ -82,10 +132,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ViewsLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/interactions/view-transitions': {
+      id: '/interactions/view-transitions'
+      path: '/interactions/view-transitions'
+      fullPath: '/interactions/view-transitions'
+      preLoaderRoute: typeof InteractionsViewTransitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interactions/input': {
+      id: '/interactions/input'
+      path: '/interactions/input'
+      fullPath: '/interactions/input'
+      preLoaderRoute: typeof InteractionsInputRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interactions/hover': {
+      id: '/interactions/hover'
+      path: '/interactions/hover'
+      fullPath: '/interactions/hover'
+      preLoaderRoute: typeof InteractionsHoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  InteractionsHoverRoute: InteractionsHoverRoute,
+  InteractionsInputRoute: InteractionsInputRoute,
+  InteractionsViewTransitionsRoute: InteractionsViewTransitionsRoute,
   ViewsLoginRoute: ViewsLoginRoute,
   ViewsOnboardingRoute: ViewsOnboardingRoute,
   ViewsIndexRoute: ViewsIndexRoute,
