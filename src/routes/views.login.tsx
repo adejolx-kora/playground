@@ -1,7 +1,8 @@
 import { StackIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 
-import logo from "@/assets/placeholder.svg";
+import logo from "@/assets/logo.svg";
+import placeholder from "@/assets/placeholder.svg";
 import { LoginForm } from "@/features/login-form";
 
 export const Route = createFileRoute("/views/login")({
@@ -16,9 +17,9 @@ function RouteComponent() {
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <StackIcon className="size-4" />
+              <img src={logo} alt="Logo" />
             </div>
-            Acme Inc.
+            Kora
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
@@ -29,7 +30,7 @@ function RouteComponent() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <img
-          src={logo}
+          src={placeholder}
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
