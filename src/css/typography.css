@@ -1,0 +1,110 @@
+@theme {
+  --font-sans: 'Geist Variable', sans-serif;
+
+  --text-2xs: calc(11px / 16px * 1rem);
+  --text-xs: calc(12px / 16px * 1rem);
+  --text-sm: calc(14px / 16px * 1rem);
+  --text-md: calc(16px / 16px * 1rem);
+  --text-lg: calc(18px / 16px * 1rem);
+  --text-xl: calc(20px / 16px * 1rem);
+  --text-2xl: calc(24px / 16px * 1rem);
+  --text-3xl: calc(32px / 16px * 1rem);
+  --text-4xl: calc(40px / 16px * 1rem);
+  --text-5xl: calc(48px / 16px * 1rem);
+  --text-6xl: calc(56px / 16px * 1rem);
+
+  --text-subheading-md: var(--text-md);
+  --text-subheading-md--line-height: calc(24px / 16px * 1rem);
+  --text-subheading-md--letter-spacing: 6%;
+  --text-subheading-md--font-weight: 500;
+
+  --text-subheading-sm: var(--text-sm);
+  --text-subheading-sm--line-height: calc(20px / 16px * 1rem);
+  --text-subheading-sm--letter-spacing: 6%;
+  --text-subheading-sm--font-weight: 500;
+
+  --text-subheading-xs: var(--text-xs);
+  --text-subheading-xs--line-height: calc(16px / 16px * 1rem);
+  --text-subheading-xs--letter-spacing: 4%;
+  --text-subheading-xs--font-weight: 500;
+
+  --text-subheading-2xs: var(--text-2xs);
+  --text-subheading-2xs--line-height: calc(12px / 16px * 1rem);
+  --text-subheading-2xs--letter-spacing: 2%;
+  --text-subheading-2xs--font-weight: 500;
+
+  --text-title-1: var(--text-6xl);
+  --text-title-1--line-height: calc(64px / 16px * 1rem);
+  --text-title-1--letter-spacing: -1%;
+  --text-title-1--font-weight: 600;
+
+  --text-title-2: var(--text-5xl);
+  --text-title-2--line-height: calc(56px / 16px * 1rem);
+  --text-title-2--letter-spacing: -1%;
+  --text-title-2--font-weight: 600;
+
+  --text-title-3: var(--text-4xl);
+  --text-title-3--line-height: calc(48px / 16px * 1rem);
+  --text-title-3--letter-spacing: -1%;
+  --text-title-3--font-weight: 600;
+
+  --text-title-4: var(--text-3xl);
+  --text-title-4--line-height: calc(40px / 16px * 1rem);
+  --text-title-4--letter-spacing: -0.5%;
+  --text-title-4--font-weight: 600;
+
+  --text-title-5: var(--text-2xl);
+  --text-title-5--line-height: calc(32px / 16px * 1rem);
+  --text-title-5--letter-spacing: 0%;
+  --text-title-5--font-weight: 600;
+
+  --text-label-xl: var(--text-xl);
+  --text-label-xl--line-height: calc(32px / 16px * 1rem);
+  --text-label-xl--letter-spacing: 1.5%;
+  --text-label-xl--font-weight: 500;
+
+  --text-label-lg: var(--text-lg);
+  --text-label-lg--line-height: calc(24px / 16px * 1rem);
+  --text-label-lg--letter-spacing: -1.5%;
+  --text-label-lg--font-weight: 500;
+
+  --text-label-md: var(--text-md);
+  --text-label-md--line-height: calc(24px / 16px * 1rem);
+  --text-label-md--letter-spacing: -1.1%;
+  --text-label-md--font-weight: 500;
+
+  --text-label-sm: var(--text-sm);
+  --text-label-sm--line-height: calc(20px / 16px * 1rem);
+  --text-label-sm--letter-spacing: -0.6%;
+  --text-label-sm--font-weight: 500;
+
+  --text-label-xs: var(--text-xs);
+  --text-label-xs--line-height: calc(12px / 16px * 1rem);
+  --text-label-xs--letter-spacing: 0%;
+  --text-label-xs--font-weight: 500;
+
+  --text-body-xl: var(--text-xl);
+  --text-body-xl--line-height: calc(32px / 16px * 1rem);
+  --text-body-xl--letter-spacing: 1.5%;
+  --text-body-xl--font-weight: 400;
+
+  --text-body-lg: var(--text-lg);
+  --text-body-lg--line-height: calc(24px / 16px * 1rem);
+  --text-body-lg--letter-spacing: -1.5%;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: var(--text-md);
+  --text-body-md--line-height: calc(24px / 16px * 1rem);
+  --text-body-md--letter-spacing: -1.1%;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: var(--text-sm);
+  --text-body-sm--line-height: calc(20px / 16px * 1rem);
+  --text-body-sm--letter-spacing: -0.6%;
+  --text-body-sm--font-weight: 400;
+
+  --text-body-xs: var(--text-xs);
+  --text-body-xs--line-height: calc(12px / 16px * 1rem);
+  --text-body-xs--letter-spacing: 0%;
+  --text-body-xs--font-weight: 400;
+}
