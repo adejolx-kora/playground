@@ -1,4 +1,8 @@
 @import "tailwindcss";
-@import "./theme.css";
-@import "./utilities.css";
-@import "./typography.css";
+@import "@kora/react/styles.css";
+
+@layer theme {
+  :root, :host {
+  --font-sans: 'Geist Variable', sans-serif;
+  }
+}

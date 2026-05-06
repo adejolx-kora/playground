@@ -1,5 +1,3 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-
 import {
   SidebarProvider,
   SidebarMenuButton,
@@ -12,7 +10,8 @@ import {
   Sidebar,
   SidebarRail,
   SidebarInset,
-} from "../ui/sidebar/sidebar";
+} from "@kora/react/sidebar";
+import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: RootComponent,

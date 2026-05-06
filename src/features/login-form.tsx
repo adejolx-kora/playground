@@ -1,7 +1,13 @@
-import { Button } from "@/ui/button/button";
-import { Field, FieldLabel, FieldDescription, FieldGroup } from "@/ui/field";
-import { Input } from "@/ui/input";
-import { Password, PasswordInput, PasswordToggle } from "@/ui/password";
+import { Input, Button } from "@kora/react";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  Password,
+  PasswordInput,
+  PasswordToggle,
+} from "@kora/react/molecules";
 
 export function LoginForm() {
   return (

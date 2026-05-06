@@ -1,10 +1,9 @@
+import { Input, Label } from "@kora/react";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 
 import { useCurrencyMask } from "@/hooks/use-currency-mask";
 import { usePhoneMask } from "@/hooks/use-phone-mask";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
 
 export const Route = createFileRoute("/interactions/input")({
   component: RouteComponent,

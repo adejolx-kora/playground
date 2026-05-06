@@ -1,4 +1,3 @@
-import { StackIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import logo from "@/assets/logo.svg";
