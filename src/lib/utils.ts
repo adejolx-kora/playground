@@ -94,3 +94,22 @@ const twMerge = extendTailwindMerge({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function stripDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+export function getRightDigitRankFromCursor(value: string, cursor: number) {
+  return stripDigits(value.slice(cursor)).length;
+}
+
+export function getCursorFromRightDigitRank(value: string, rightRank: number) {
+  let digitCount = 0;
+
+  for (let i = value.length - 1; i >= 0; i--) {
+    if (digitCount === rightRank) return i + 1;
+    if (/\d/.test(value[i])) digitCount++;
+  }
+
+  return 0;
+}

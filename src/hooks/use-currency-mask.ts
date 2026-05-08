@@ -1,5 +1,11 @@
 import { useLayoutEffect, useRef, useCallback, useMemo } from "react";
 
+import {
+  getCursorFromRightDigitRank,
+  getRightDigitRankFromCursor,
+  stripDigits,
+} from "@/lib/utils";
+
 const formatters = new Map();
 
 const getFormatter = (
@@ -11,17 +17,6 @@ const getFormatter = (
     formatters.set(key, new Intl.NumberFormat(locale, options));
   }
   return formatters.get(key);
-};
-
-const strip = (val: string) => val.replace(/\D/g, "");
-
-const getCursorFromRightRank = (val: string, rightRank: number) => {
-  let digitCount = 0;
-  for (let i = val.length - 1; i >= 0; i--) {
-    if (digitCount === rightRank) return i + 1;
-    if (/\d/.test(val[i])) digitCount++;
-  }
-  return 0;
 };
 
 export const useCurrencyMask = ({
@@ -58,16 +53,19 @@ export const useCurrencyMask = ({
     (e: React.FormEvent<HTMLInputElement>) => {
       const el = e.currentTarget;
 
-      const rightRank = strip(el.value.slice(el.selectionStart || 0)).length;
+      const rightRank = getRightDigitRankFromCursor(
+        el.value,
+        el.selectionStart || 0,
+      );
 
-      const raw = strip(el.value);
+      const raw = stripDigits(el.value);
 
       onChange(raw);
 
       const formatted = raw ? formatter.format(Number(raw) / 100) : "";
       el.value = formatted;
 
-      const newPos = getCursorFromRightRank(formatted, rightRank);
+      const newPos = getCursorFromRightDigitRank(formatted, rightRank);
       el.setSelectionRange(newPos, newPos);
     },
     [onChange, formatter],

@@ -1,16 +1,9 @@
 import { useCallback, useLayoutEffect, useRef } from "react";
 
-const getRightDigitRank = (val: string, cursor: number) =>
-  strip(val.slice(cursor)).length;
-
-const getCursorFromRightRank = (val: string, rightRank: number) => {
-  let digitCount = 0;
-  for (let i = val.length - 1; i >= 0; i--) {
-    if (digitCount === rightRank) return i + 1;
-    if (/\d/.test(val[i])) digitCount++;
-  }
-  return 0;
-};
+import {
+  getCursorFromRightDigitRank,
+  getRightDigitRankFromCursor,
+} from "@/lib/utils";
 
 const strip = (val: string) => val.replace(/[^\d+]/g, "");
 
@@ -86,7 +79,10 @@ export const usePhoneMask = ({
   const onInput = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
       const el = e.currentTarget;
-      const rightRank = getRightDigitRank(el.value, el.selectionStart || 0);
+      const rightRank = getRightDigitRankFromCursor(
+        el.value,
+        el.selectionStart || 0,
+      );
 
       const raw = strip(el.value);
       onChange(raw);
@@ -94,7 +90,7 @@ export const usePhoneMask = ({
       const formatted = applyMask(raw, pattern);
       el.value = formatted;
 
-      const newPos = getCursorFromRightRank(formatted, rightRank);
+      const newPos = getCursorFromRightDigitRank(formatted, rightRank);
       el.setSelectionRange(newPos, newPos);
     },
     [onChange, pattern],
