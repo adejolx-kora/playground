@@ -1,8 +1,0 @@
-@import "tailwindcss";
-@import "@kora/react/styles.css";
-
-@layer theme {
-  :root, :host {
-  --font-sans: 'Geist Variable', sans-serif;
-  }
-}

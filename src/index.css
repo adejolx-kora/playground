@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@import "@korapay/react/styles.css";
+@source "../node_modules/@korapay/react/dist/**/*.{js,mjs,jsx,tsx}";
+
+/* @import "@korapay/react/styles.compiled.css"; */
+
+@theme {
+  --font-sans: "Geist Variable", sans-serif;
+}
+
+@utility el-grid-* {
+  --grid-min: 16rem;
+  --grid-gap: 1rem;
+  --grid-placement: --value(integer);
+  --grid-placement: --value([integer]);
+
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      min(
+        100%,
+        max(
+          var(--grid-min),
+          calc(
+            (100% - ((var(--grid-placement) - 1) * var(--grid-gap))) /
+              var(--grid-placement)
+          )
+        )
+      ),
+      1fr
+    )
+  );
+}
