@@ -33,7 +33,7 @@ const sections: Array<MenuSection> = [
     items: [
       { label: "Hover", url: "/interactions/hover" },
       { label: "View transitions", url: "/interactions/view-transitions" },
-      { label: "Input Masks", url: "/interactions/input" },
+      { label: "Input", url: "/interactions/input" },
     ],
   },
   {
