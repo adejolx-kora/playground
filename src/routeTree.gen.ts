@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ViewsIndexRouteImport } from './routes/views.index'
+import { Route as ViewsWizardModalRouteImport } from './routes/views.wizard-modal'
 import { Route as ViewsOnboardingRouteImport } from './routes/views.onboarding'
 import { Route as ViewsLoginRouteImport } from './routes/views.login'
 import { Route as InteractionsViewTransitionsRouteImport } from './routes/interactions.view-transitions'
@@ -19,6 +20,11 @@ import { Route as InteractionsHoverRouteImport } from './routes/interactions.hov
 const ViewsIndexRoute = ViewsIndexRouteImport.update({
   id: '/views/',
   path: '/views/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ViewsWizardModalRoute = ViewsWizardModalRouteImport.update({
+  id: '/views/wizard-modal',
+  path: '/views/wizard-modal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ViewsOnboardingRoute = ViewsOnboardingRouteImport.update({
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
+  '/views/wizard-modal': typeof ViewsWizardModalRoute
   '/views/': typeof ViewsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
+  '/views/wizard-modal': typeof ViewsWizardModalRoute
   '/views': typeof ViewsIndexRoute
 }
 export interface FileRoutesById {
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/views/login': typeof ViewsLoginRoute
   '/views/onboarding': typeof ViewsOnboardingRoute
+  '/views/wizard-modal': typeof ViewsWizardModalRoute
   '/views/': typeof ViewsIndexRoute
 }
 export interface FileRouteTypes {
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/interactions/view-transitions'
     | '/views/login'
     | '/views/onboarding'
+    | '/views/wizard-modal'
     | '/views/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/interactions/view-transitions'
     | '/views/login'
     | '/views/onboarding'
+    | '/views/wizard-modal'
     | '/views'
   id:
     | '__root__'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/interactions/view-transitions'
     | '/views/login'
     | '/views/onboarding'
+    | '/views/wizard-modal'
     | '/views/'
   fileRoutesById: FileRoutesById
 }
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   InteractionsViewTransitionsRoute: typeof InteractionsViewTransitionsRoute
   ViewsLoginRoute: typeof ViewsLoginRoute
   ViewsOnboardingRoute: typeof ViewsOnboardingRoute
+  ViewsWizardModalRoute: typeof ViewsWizardModalRoute
   ViewsIndexRoute: typeof ViewsIndexRoute
 }
 
@@ -116,6 +129,13 @@ declare module '@tanstack/react-router' {
       path: '/views'
       fullPath: '/views/'
       preLoaderRoute: typeof ViewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/views/wizard-modal': {
+      id: '/views/wizard-modal'
+      path: '/views/wizard-modal'
+      fullPath: '/views/wizard-modal'
+      preLoaderRoute: typeof ViewsWizardModalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/views/onboarding': {
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   InteractionsViewTransitionsRoute: InteractionsViewTransitionsRoute,
   ViewsLoginRoute: ViewsLoginRoute,
   ViewsOnboardingRoute: ViewsOnboardingRoute,
+  ViewsWizardModalRoute: ViewsWizardModalRoute,
   ViewsIndexRoute: ViewsIndexRoute,
 }
 export const routeTree = rootRouteImport

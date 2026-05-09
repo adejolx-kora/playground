@@ -41,6 +41,7 @@ const sections: Array<MenuSection> = [
     items: [
       { label: "Login", url: "/views/login" },
       { label: "Onboarding", url: "/views/onboarding" },
+      { label: "Wizard modal", url: "/views/wizard-modal" },
     ],
   },
 ];
