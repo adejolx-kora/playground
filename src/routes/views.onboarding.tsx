@@ -29,7 +29,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useFormik } from "formik";
 import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import {
@@ -523,7 +523,10 @@ function ReactHookFormOnboardingFlow() {
     },
   });
 
-  const values = form.watch();
+  const values = useWatch({
+    control: form.control,
+    defaultValue: initialValues,
+  }) as BaseOnboardingValues;
   const stepOrder = steps.map((step) => step.id);
 
   return (
