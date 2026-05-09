@@ -33,7 +33,7 @@ const sections: Array<MenuSection> = [
     items: [
       { label: "Hover", url: "/interactions/hover" },
       { label: "View transitions", url: "/interactions/view-transitions" },
-      { label: "Input", url: "/interactions/input" },
+      { label: "Input Masks", url: "/interactions/input" },
     ],
   },
   {
@@ -86,9 +86,7 @@ function RootComponent() {
         </Sidebar>
 
         <SidebarInset>
-          <div className="h-full">
-            <Outlet />
-          </div>
+          <Outlet />
         </SidebarInset>
       </SidebarProvider>
     </div>
