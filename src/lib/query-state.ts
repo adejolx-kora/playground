@@ -6,14 +6,14 @@ export type QueryStateOptions = {
 };
 
 type QueryParserConfig<T> = {
-  parse: (value: string | null) => T | null;
-  serialize: (value: T) => string | null;
-  eq?: (a: T, b: T) => boolean;
+  parse(value: string | null): T | null;
+  serialize(value: T): string | null;
+  eq?(a: T, b: T): boolean;
   defaultValue?: T;
 };
 
 export type QueryParser<T> = QueryParserConfig<T> & {
-  withDefault: (defaultValue: T) => QueryParser<T>;
+  withDefault(defaultValue: T): QueryParser<T>;
 };
 
 export type QuerySchema = Record<string, QueryParser<unknown>>;
