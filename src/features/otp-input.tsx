@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-
 import { Input } from "@korapay/react";
 import React from "react";
 
@@ -21,9 +19,7 @@ function useOtpInputContext() {
   const context = React.useContext(OtpInputContext);
 
   if (!context) {
-    throw new Error(
-      "OTPInput compound components must be used inside OTPInput.Root",
-    );
+    throw new Error("OTP input components must be used inside OTPInputRoot");
   }
 
   return context;
@@ -154,7 +150,10 @@ type OTPInputGroupProps = React.ComponentPropsWithoutRef<"div">;
 
 function OTPInputGroup({ className, ...props }: OTPInputGroupProps) {
   return (
-    <div className={cn("flex items-center gap-2", className)} {...props} />
+    <div
+      className={cn("flex w-full items-center gap-1.5 sm:gap-2", className)}
+      {...props}
+    />
   );
 }
 
@@ -272,7 +271,7 @@ function OTPInputSlot({
       autoComplete={index === 0 ? "one-time-code" : "off"}
       disabled={disabled || props.disabled}
       className={cn(
-        "h-12 w-12 px-0 text-center text-label-md tabular-nums",
+        "aspect-square min-w-0 flex-1 max-w-12 px-0 text-center text-label-md tabular-nums",
         className,
       )}
     />
@@ -291,9 +290,4 @@ function OTPInputSeparator({ className, ...props }: OTPInputSeparatorProps) {
   );
 }
 
-export const OTPInput = Object.assign(OTPInputRoot, {
-  Root: OTPInputRoot,
-  Group: OTPInputGroup,
-  Slot: OTPInputSlot,
-  Separator: OTPInputSeparator,
-});
+export { OTPInputGroup, OTPInputRoot, OTPInputSeparator, OTPInputSlot };
