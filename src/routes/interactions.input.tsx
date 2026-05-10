@@ -14,6 +14,7 @@ import { ArrowRightIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 
+import { NumericStepper } from "@/features/numeric-stepper";
 import {
   OTPInputGroup,
   OTPInputRoot,
@@ -379,6 +380,61 @@ function QueryStateInput() {
   );
 }
 
+function NumericStepperInput() {
+  const [plainValue, setPlainValue] = React.useState("12");
+  const [currencyValue, setCurrencyValue] = React.useState("25.99");
+
+  return (
+    <InputCard
+      id="numeric-stepper-input"
+      title="Numeric Stepper Compound API"
+      description="A reusable stepper with named subcomponents that supports integer or decimal values based on your configured input."
+      footer={`Plain value: ${plainValue || "-"} | Decimal value: ${currencyValue || "-"}`}
+    >
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label
+            htmlFor="plain-stepper-input"
+            className="text-label-sm text-content-default-secondary"
+          >
+            Plain numeric
+          </Label>
+          <NumericStepper.Root
+            value={plainValue}
+            onValueChange={setPlainValue}
+            min={0}
+            max={100}
+          >
+            <NumericStepper.Decrease />
+            <NumericStepper.Input id="plain-stepper-input" />
+            <NumericStepper.Increase />
+          </NumericStepper.Root>
+        </div>
+
+        <div className="space-y-2">
+          <Label
+            htmlFor="currency-stepper-input"
+            className="text-label-sm text-content-default-secondary"
+          >
+            Decimal value
+          </Label>
+          <NumericStepper.Root
+            value={currencyValue}
+            onValueChange={setCurrencyValue}
+            min={0}
+            max={1000000}
+            step={0.01}
+          >
+            <NumericStepper.Decrease aria-label="Decrease currency amount" />
+            <NumericStepper.Input id="currency-stepper-input" />
+            <NumericStepper.Increase aria-label="Increase currency amount" />
+          </NumericStepper.Root>
+        </div>
+      </div>
+    </InputCard>
+  );
+}
+
 function FilterGroupInput() {
   const [filterQueryValues, setFilterQueryValues] =
     useQueryStates(filterQuerySchema);
@@ -566,6 +622,7 @@ function RouteComponent() {
             <div className="grid auto-rows-[auto_minmax(0,1fr)_auto] grid-cols-1 items-stretch sm:grid-cols-2 lg:grid-cols-3">
               <OtpInput />
               <QueryStateInput />
+              <NumericStepperInput />
             </div>
           </section>
         </div>
