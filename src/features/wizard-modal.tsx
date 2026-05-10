@@ -9,6 +9,7 @@ import {
   DialogPortal,
   DialogTitle,
 } from "@korapay/react";
+import { BannerAnchor } from "@korapay/react/molecules";
 import * as React from "react";
 
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
@@ -380,10 +381,10 @@ type WizardModalSectionProps = React.ComponentPropsWithoutRef<"div">;
 
 function WizardModalHeader({ className, ...props }: WizardModalSectionProps) {
   return (
-    <DialogHeader
-      className={cn("mx-0 mt-0 px-lg py-xs", className)}
-      {...props}
-    />
+    <>
+      <DialogHeader className={cn("mx-0 mt-0 p-xs", className)} {...props} />
+      <BannerAnchor id="wizard-modal-banner-anchor" layout="flow" />
+    </>
   );
 }
 
@@ -404,13 +405,18 @@ function WizardModalDescription({
 }
 
 function WizardModalBody({ className, ...props }: WizardModalSectionProps) {
-  return <div className={cn("px-lg py-xs", className)} {...props} />;
+  return (
+    <div
+      className={cn("max-h-175 overflow-y-auto px-xs py-md", className)}
+      {...props}
+    />
+  );
 }
 
 function WizardModalFooter({ className, ...props }: WizardModalSectionProps) {
   return (
     <DialogFooter
-      className={cn("mx-0 mb-0 px-lg py-xs", className)}
+      className={cn("mx-0 mb-0 px-sm py-xs", className)}
       {...props}
     />
   );
