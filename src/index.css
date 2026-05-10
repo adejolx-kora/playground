@@ -24,7 +24,7 @@
 
 @theme {
   --font-sans: "Geist Variable", sans-serif;
-  --animation-vibrate: vibrate 0.6s ease-in-out;
+  --animate-vibrate: vibrate 0.6s ease-in-out;
 }
 
 [data-invalid="true"] {
