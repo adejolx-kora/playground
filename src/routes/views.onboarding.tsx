@@ -318,7 +318,7 @@ function VanillaOnboardingFlow() {
           <FieldGroup>
             {flow.currentStep.id === "account" && (
               <>
-                <Field>
+                <Field data-invalid={!!(touched.fullName && errors.fullName)}>
                   <FieldLabel htmlFor="vanilla-full-name">Full name</FieldLabel>
                   <Input
                     id="vanilla-full-name"
@@ -332,7 +332,7 @@ function VanillaOnboardingFlow() {
                     <FieldError>{errors.fullName}</FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field data-invalid={!!(touched.email && errors.email)}>
                   <FieldLabel htmlFor="vanilla-email">Work email</FieldLabel>
                   <Input
                     id="vanilla-email"
@@ -352,7 +352,7 @@ function VanillaOnboardingFlow() {
 
             {flow.currentStep.id === "profile" && (
               <>
-                <Field>
+                <Field data-invalid={!!(touched.company && errors.company)}>
                   <FieldLabel htmlFor="vanilla-company">Company</FieldLabel>
                   <Input
                     id="vanilla-company"
@@ -366,7 +366,7 @@ function VanillaOnboardingFlow() {
                     <FieldError>{errors.company}</FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field data-invalid={!!(touched.role && errors.role)}>
                   <FieldLabel htmlFor="vanilla-role">Role</FieldLabel>
                   <Select
                     value={values.role}
@@ -393,7 +393,7 @@ function VanillaOnboardingFlow() {
 
             {flow.currentStep.id === "preferences" && (
               <>
-                <Field>
+                <Field data-invalid={!!(touched.useCase && errors.useCase)}>
                   <FieldLabel htmlFor="vanilla-use-case">
                     What are you onboarding for?
                   </FieldLabel>
@@ -552,7 +552,7 @@ function ReactHookFormOnboardingFlow() {
           <FieldGroup>
             {flow.currentStep.id === "account" && (
               <>
-                <Field>
+                <Field data-invalid={!!form.formState.errors.fullName}>
                   <FieldLabel htmlFor="rhf-full-name">Full name</FieldLabel>
                   <Input
                     id="rhf-full-name"
@@ -567,7 +567,7 @@ function ReactHookFormOnboardingFlow() {
                     </FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field data-invalid={!!form.formState.errors.email}>
                   <FieldLabel htmlFor="rhf-email">Work email</FieldLabel>
                   <Input
                     id="rhf-email"
@@ -590,7 +590,7 @@ function ReactHookFormOnboardingFlow() {
 
             {flow.currentStep.id === "profile" && (
               <>
-                <Field>
+                <Field data-invalid={!!form.formState.errors.company}>
                   <FieldLabel htmlFor="rhf-company">Company</FieldLabel>
                   <Input
                     id="rhf-company"
@@ -605,7 +605,7 @@ function ReactHookFormOnboardingFlow() {
                     </FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field data-invalid={!!form.formState.errors.role}>
                   <FieldLabel htmlFor="rhf-role">Role</FieldLabel>
                   <Controller
                     control={form.control}
@@ -643,7 +643,7 @@ function ReactHookFormOnboardingFlow() {
 
             {flow.currentStep.id === "preferences" && (
               <>
-                <Field>
+                <Field data-invalid={!!form.formState.errors.useCase}>
                   <FieldLabel htmlFor="rhf-use-case">
                     What are you onboarding for?
                   </FieldLabel>
@@ -818,7 +818,11 @@ function FormikOnboardingFlow() {
           <FieldGroup>
             {flow.currentStep.id === "account" && (
               <>
-                <Field>
+                <Field
+                  data-invalid={
+                    !!(formik.touched.fullName && formik.errors.fullName)
+                  }
+                >
                   <FieldLabel htmlFor="formik-full-name">Full name</FieldLabel>
                   <Input
                     id="formik-full-name"
@@ -838,7 +842,9 @@ function FormikOnboardingFlow() {
                     <FieldError>{formik.errors.fullName}</FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field
+                  data-invalid={!!(formik.touched.email && formik.errors.email)}
+                >
                   <FieldLabel htmlFor="formik-email">Work email</FieldLabel>
                   <Input
                     id="formik-email"
@@ -861,7 +867,11 @@ function FormikOnboardingFlow() {
 
             {flow.currentStep.id === "profile" && (
               <>
-                <Field>
+                <Field
+                  data-invalid={
+                    !!(formik.touched.company && formik.errors.company)
+                  }
+                >
                   <FieldLabel htmlFor="formik-company">Company</FieldLabel>
                   <Input
                     id="formik-company"
@@ -881,7 +891,9 @@ function FormikOnboardingFlow() {
                     <FieldError>{formik.errors.company}</FieldError>
                   ) : null}
                 </Field>
-                <Field>
+                <Field
+                  data-invalid={!!(formik.touched.role && formik.errors.role)}
+                >
                   <FieldLabel htmlFor="formik-role">Role</FieldLabel>
                   <Select
                     value={formik.values.role}
@@ -908,7 +920,11 @@ function FormikOnboardingFlow() {
 
             {flow.currentStep.id === "preferences" && (
               <>
-                <Field>
+                <Field
+                  data-invalid={
+                    !!(formik.touched.useCase && formik.errors.useCase)
+                  }
+                >
                   <FieldLabel htmlFor="formik-use-case">
                     What are you onboarding for?
                   </FieldLabel>

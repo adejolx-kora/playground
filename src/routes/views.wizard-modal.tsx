@@ -9,11 +9,15 @@ import {
   Textarea,
 } from "@korapay/react";
 import {
+  banner,
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
+  Note,
+  NoteContent,
+  NoteIcon,
 } from "@korapay/react/molecules";
 import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
@@ -152,9 +156,9 @@ function RouteComponent() {
             </WizardModalDescription>
           </WizardModalHeader>
 
-          <WizardModalBody className="mt-4">
+          <WizardModalBody>
             <FieldGroup>
-              <Field>
+              <Field data-invalid={!!form.formState.errors.businessName}>
                 <FieldLabel htmlFor="wizard-business-name">
                   Business name
                 </FieldLabel>
@@ -176,7 +180,7 @@ function RouteComponent() {
                 ) : null}
               </Field>
 
-              <Field>
+              <Field data-invalid={!!form.formState.errors.website}>
                 <FieldLabel htmlFor="wizard-website">Website</FieldLabel>
                 <Input
                   id="wizard-website"
@@ -195,7 +199,7 @@ function RouteComponent() {
                 ) : null}
               </Field>
 
-              <Field>
+              <Field data-invalid={!!form.formState.errors.useCase}>
                 <FieldLabel htmlFor="wizard-use-case">Use case</FieldLabel>
                 <Textarea
                   id="wizard-use-case"
@@ -215,9 +219,33 @@ function RouteComponent() {
                 ) : null}
               </Field>
             </FieldGroup>
+            <Note variant="warning" className="mt-6">
+              <NoteIcon />
+              <NoteContent>
+                Modifications you make here will be applied immediately after
+                you save them.
+              </NoteContent>
+            </Note>
           </WizardModalBody>
 
-          <WizardModalFooter className="mt-6">
+          <WizardModalFooter>
+            <Button
+              type="button"
+              variant="neutral-outline"
+              className="mr-auto"
+              size="lg"
+              onClick={() => {
+                banner.error(
+                  "This is a demo. Form values submitted here are not saved anywhere.",
+                  {
+                    anchorId: "wizard-modal-banner-anchor",
+                    closeButton: true,
+                  },
+                );
+              }}
+            >
+              Show notice
+            </Button>
             <WizardModalCancel />
             <WizardModalNext />
           </WizardModalFooter>
@@ -232,7 +260,7 @@ function RouteComponent() {
             </WizardModalDescription>
           </WizardModalHeader>
 
-          <WizardModalBody className="mt-4">
+          <WizardModalBody>
             <FieldGroup>
               <Field>
                 <FieldLabel>Business name</FieldLabel>
@@ -251,16 +279,15 @@ function RouteComponent() {
             </FieldGroup>
           </WizardModalBody>
 
-          <WizardModalFooter className="mt-6">
+          <WizardModalFooter>
             <WizardModalBack />
             <WizardModalSubmit>Yes, Confirm</WizardModalSubmit>
           </WizardModalFooter>
         </WizardModalStep>
 
         <WizardModalFeedback
-        // title="Configuration saved"
-        // description="Your card issuance setup has been captured successfully."
-        // action="Done"
+          title="Configuration saved"
+          description="Your card issuance setup has been captured successfully."
         />
       </WizardModal>
     </div>
