@@ -87,8 +87,6 @@ type WizardModalContextValue<
   TStepId extends StepId,
 > = {
   status: WizardModalState;
-  closeModal: () => void;
-  state: WizardModalState;
   currentStep: MultiStepFormStep<TValues, TStepId>;
   currentStepIndex: number;
   totalSteps: number;
@@ -175,8 +173,8 @@ function WizardModalFeedback<
           size="lg"
           variant="primary-ghost"
           onClick={() => {
-            context.closeModal();
-            onActionClick?.();
+            context.close();
+            if (onActionClick) onActionClick();
           }}
           className="mt-2 font-semibold"
         >
@@ -343,8 +341,6 @@ function WizardModalRoot<TValues extends FormValues, TStepId extends StepId>(
   const contextValue = React.useMemo<WizardModalContextValue<TValues, TStepId>>(
     () => ({
       status,
-      closeModal: () => setOpen(false),
-      state: status,
       currentStep: flow.currentStep,
       currentStepIndex: flow.currentStepIndex,
       totalSteps: flow.totalSteps,
@@ -489,7 +485,7 @@ function WizardModalNext({
       size="lg"
       className={cn("w-32", className)}
       disabled={
-        disabled ?? (context.isLastStep || context.state === "submitting")
+        disabled ?? (context.isLastStep || context.status === "submitting")
       }
       onClick={() => {
         void context.nextStep();
@@ -514,13 +510,13 @@ function WizardModalSubmit({
       type="button"
       size="lg"
       className={cn("w-32", className)}
-      disabled={disabled ?? context.state === "submitting"}
+      disabled={disabled ?? context.status === "submitting"}
       onClick={() => {
         void context.submit();
       }}
       {...props}
     >
-      {context.state === "submitting" ? "Submitting..." : children}
+      {context.status === "submitting" ? "Submitting..." : children}
     </Button>
   );
 }
