@@ -74,6 +74,16 @@ function useNumericStepperContext() {
   return context;
 }
 
+function useLatestRef<T>(value: T) {
+  const ref = React.useRef(value);
+
+  React.useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref;
+}
+
 function clampToRange(value: bigint, min: bigint, max: bigint) {
   return value < min ? min : value > max ? max : value;
 }
@@ -91,6 +101,14 @@ function getFractionDigits(value: string | number | undefined) {
   }
 
   return stringValue.length - dotIndex - 1;
+}
+
+function hasDecimalSeparator(value: string | number | undefined) {
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  return String(value).includes(".");
 }
 
 function sanitizeNumericInput(value: string, allowDecimal: boolean) {
@@ -165,8 +183,14 @@ function normalizeRawValue(
   const units = parseToScaledUnits(sanitized, scale);
   const minUnits = parseToScaledUnits(min, scale);
   const maxUnits = parseToScaledUnits(max, scale);
+  const clampedUnits = clampToRange(units, minUnits, maxUnits);
 
-  return formatScaledUnits(clampToRange(units, minUnits, maxUnits), scale);
+  // Preserve in-progress decimal entry like "0.", "0.0", or "12.3400" while in range.
+  if (scale > 0 && hasDecimalSeparator(sanitized) && clampedUnits === units) {
+    return sanitized;
+  }
+
+  return formatScaledUnits(clampedUnits, scale);
 }
 
 type NumericStepperRootProps = {
@@ -187,7 +211,7 @@ function NumericStepperRoot({
   defaultValue = "",
   onValueChange,
   min = 0,
-  max = 100,
+  max = 1_000_000_000,
   step = 1,
   disabled = false,
   name,
@@ -214,7 +238,15 @@ function NumericStepperRoot({
     normalizeRawValue(defaultValue, minValue, maxValue, configuredScale),
   );
 
-  const activeScale = configuredScale;
+  const activeScale = React.useMemo(() => {
+    const currentValue = isControlled ? value : internalValue;
+
+    if (!hasDecimalSeparator(currentValue)) {
+      return configuredScale;
+    }
+
+    return Math.max(configuredScale, 1, getFractionDigits(currentValue));
+  }, [configuredScale, internalValue, isControlled, value]);
 
   const rawValue = normalizeRawValue(
     isControlled ? value : internalValue,
@@ -223,12 +255,28 @@ function NumericStepperRoot({
     activeScale,
   );
 
+  const latestValueRef = useLatestRef(rawValue);
+  const latestScaleRef = useLatestRef(activeScale);
+  const latestMinRef = useLatestRef(minValue);
+  const latestMaxRef = useLatestRef(maxValue);
+  const latestStepRef = useLatestRef(step);
+
   const setValue = React.useCallback(
     (nextValue: string, options?: { clamp?: boolean }) => {
       const clampValue = options?.clamp ?? true;
-      const sanitized = sanitizeNumericInput(nextValue, activeScale > 0);
+      const allowDecimal =
+        latestScaleRef.current > 0 || hasDecimalSeparator(nextValue);
+      const sanitized = sanitizeNumericInput(nextValue, allowDecimal);
+      const targetScale = allowDecimal
+        ? Math.max(latestScaleRef.current, 1, getFractionDigits(sanitized))
+        : latestScaleRef.current;
       const normalized = clampValue
-        ? normalizeRawValue(sanitized, minValue, maxValue, activeScale)
+        ? normalizeRawValue(
+            sanitized,
+            latestMinRef.current,
+            latestMaxRef.current,
+            targetScale,
+          )
         : sanitized;
 
       if (!isControlled) {
@@ -237,17 +285,32 @@ function NumericStepperRoot({
 
       onValueChange?.(normalized);
     },
-    [activeScale, isControlled, maxValue, minValue, onValueChange],
+    [isControlled, latestMaxRef, latestMinRef, latestScaleRef, onValueChange],
   );
 
   const stepBy = React.useCallback(
     (direction: 1 | -1) => {
-      const currentValue = rawValue === "" ? minValue : rawValue;
-      const currentUnits = parseToScaledUnits(currentValue, activeScale);
-      const minUnits = parseToScaledUnits(minValue, activeScale);
-      const maxUnits = parseToScaledUnits(maxValue, activeScale);
+      const currentValue =
+        latestValueRef.current === ""
+          ? latestMinRef.current
+          : latestValueRef.current;
+      const currentUnits = parseToScaledUnits(
+        currentValue,
+        latestScaleRef.current,
+      );
+      const minUnits = parseToScaledUnits(
+        latestMinRef.current,
+        latestScaleRef.current,
+      );
+      const maxUnits = parseToScaledUnits(
+        latestMaxRef.current,
+        latestScaleRef.current,
+      );
       const scaledStep =
-        parseToScaledUnits(Math.abs(step) || 1, activeScale) || 1n;
+        parseToScaledUnits(
+          Math.abs(latestStepRef.current) || 1,
+          latestScaleRef.current,
+        ) || 1n;
 
       const nextUnits = clampToRange(
         currentUnits + scaledStep * BigInt(direction),
@@ -255,9 +318,18 @@ function NumericStepperRoot({
         maxUnits,
       );
 
-      setValue(formatScaledUnits(nextUnits, activeScale), { clamp: false });
+      setValue(formatScaledUnits(nextUnits, latestScaleRef.current), {
+        clamp: false,
+      });
     },
-    [activeScale, maxValue, minValue, rawValue, setValue, step],
+    [
+      latestMaxRef,
+      latestMinRef,
+      latestScaleRef,
+      latestStepRef,
+      latestValueRef,
+      setValue,
+    ],
   );
 
   const contextValue = React.useMemo<NumericStepperContextValue>(
@@ -295,8 +367,7 @@ const NumericStepperInput = React.forwardRef<
   HTMLInputElement,
   NumericStepperInputProps
 >(function NumericStepperInput({ className, ...props }, forwardedRef) {
-  const { value, disabled, min, scale, stepBy, setValue } =
-    useNumericStepperContext();
+  const { value, disabled, min, stepBy, setValue } = useNumericStepperContext();
 
   return (
     <InputGroupInput
@@ -304,8 +375,8 @@ const NumericStepperInput = React.forwardRef<
       ref={forwardedRef}
       value={value}
       disabled={disabled || props.disabled}
-      inputMode={scale > 0 ? "decimal" : "numeric"}
-      pattern={scale > 0 ? "[0-9]*[.]?[0-9]*" : "[0-9]*"}
+      inputMode="decimal"
+      pattern="[0-9]*[.]?[0-9]*"
       onKeyDown={(event) => {
         props.onKeyDown?.(event);
 
