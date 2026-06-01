@@ -405,9 +405,11 @@ function NumericStepperInput() {
             min={0}
             max={100}
           >
-            <NumericStepper.Decrease />
             <NumericStepper.Input id="plain-stepper-input" />
-            <NumericStepper.Increase />
+            <NumericStepper.Controls>
+              <NumericStepper.Increase />
+              <NumericStepper.Decrease />
+            </NumericStepper.Controls>
           </NumericStepper.Root>
         </div>
 
@@ -425,9 +427,11 @@ function NumericStepperInput() {
             max={1000000}
             step={0.01}
           >
-            <NumericStepper.Decrease aria-label="Decrease currency amount" />
             <NumericStepper.Input id="currency-stepper-input" />
-            <NumericStepper.Increase aria-label="Increase currency amount" />
+            <NumericStepper.Controls>
+              <NumericStepper.Increase aria-label="Increase currency amount" />
+              <NumericStepper.Decrease aria-label="Decrease currency amount" />
+            </NumericStepper.Controls>
           </NumericStepper.Root>
         </div>
       </div>
@@ -498,7 +502,7 @@ function FilterGroupInput() {
             setPeriodFilter(value ?? "this-month");
           }}
           placeholder="This month"
-          className="w-full min-w-0 sm:w-auto sm:min-w-[10rem] sm:flex-none"
+          className="w-full min-w-0 sm:w-auto sm:min-w-40 sm:flex-none"
           options={[
             { label: "Today", value: "today" },
             { label: "Last 7 days", value: "last-7-days" },

@@ -1,6 +1,6 @@
 import { Button } from "@korapay/react";
 import { InputGroup, InputGroupInput } from "@korapay/react/molecules";
-import { MinusIcon, PlusIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, CaretUpIcon } from "@phosphor-icons/react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -8,11 +8,12 @@ import { cn } from "@/lib/utils";
 type NumericStepperContextValue = {
   value: string;
   disabled: boolean;
-  min: string;
-  max: string;
+  min: number;
+  max: number;
+  step: number;
   scale: number;
-  setValue: (value: string, options?: { clamp?: boolean }) => void;
-  stepBy: (direction: 1 | -1) => void;
+  setDraftFromInput: (value: string) => void;
+  stepValue: (direction: 1 | -1) => void;
 };
 
 const NumericStepperContext =
@@ -103,53 +104,53 @@ function getFractionDigits(value: string | number | undefined) {
   return stringValue.length - dotIndex - 1;
 }
 
-function hasDecimalSeparator(value: string | number | undefined) {
-  if (value === undefined || value === null) {
-    return false;
-  }
-
-  return String(value).includes(".");
-}
-
-function sanitizeNumericInput(value: string, allowDecimal: boolean) {
-  const onlyNumericChars = value.replace(/[^\d.]/g, "");
-
-  if (!onlyNumericChars) {
+function sanitizeDraft(value: string) {
+  const filtered = value.replace(/[^\d.-]/g, "");
+  if (!filtered) {
     return "";
   }
 
-  if (!allowDecimal) {
-    const integerOnly = onlyNumericChars.replace(/\./g, "");
-    const normalizedInteger = integerOnly.replace(/^0+(?=\d)/, "");
+  const isNegative = filtered.startsWith("-");
+  const unsigned = filtered.replace(/-/g, "");
+  const firstDot = unsigned.indexOf(".");
 
-    return normalizedInteger || "0";
+  let normalizedUnsigned = unsigned;
+  if (firstDot !== -1) {
+    const integerPart = unsigned.slice(0, firstDot).replace(/\./g, "");
+    const decimalPart = unsigned.slice(firstDot + 1).replace(/\./g, "");
+    normalizedUnsigned = `${integerPart}.${decimalPart}`;
   }
 
-  const firstDot = onlyNumericChars.indexOf(".");
-  if (firstDot === -1) {
-    const normalizedInteger = onlyNumericChars.replace(/^0+(?=\d)/, "");
-    return normalizedInteger || "0";
-  }
-
-  const integerPart = onlyNumericChars.slice(0, firstDot).replace(/\./g, "");
-  const decimalPart = onlyNumericChars.slice(firstDot + 1).replace(/\./g, "");
-  const normalizedInteger = integerPart.replace(/^0+(?=\d)/, "") || "0";
-
-  return `${normalizedInteger}.${decimalPart}`;
+  return `${isNegative ? "-" : ""}${normalizedUnsigned}`;
 }
 
-function parseToScaledUnits(value: string | number, scale: number) {
-  const sanitized = sanitizeNumericInput(String(value), scale > 0);
-
-  if (!sanitized) {
-    return 0n;
+function isParseableNumericDraft(draft: string) {
+  if (!draft || draft === "-" || draft === "." || draft === "-.") {
+    return false;
   }
 
-  const [integerPartRaw, decimalPartRaw = ""] = sanitized.split(".");
+  return /^-?\d*(\.\d*)?$/.test(draft);
+}
+
+function parseDraftToScaledUnits(value: string | number, scale: number) {
+  const sanitized = sanitizeDraft(String(value));
+
+  if (!isParseableNumericDraft(sanitized)) {
+    return null;
+  }
+
+  const isNegative = sanitized.startsWith("-");
+  const unsigned = isNegative ? sanitized.slice(1) : sanitized;
+  const [integerPartRaw, decimalPartRaw = ""] = unsigned.split(".");
   const integerPart = integerPartRaw || "0";
   const decimalPart = decimalPartRaw.slice(0, scale).padEnd(scale, "0");
 
-  return BigInt(`${integerPart}${decimalPart}`);
+  const units = BigInt(`${integerPart}${decimalPart}`);
+  return isNegative ? -units : units;
+}
+
+function parseToScaledUnits(value: string | number, scale: number) {
+  return parseDraftToScaledUnits(value, scale) ?? 0n;
 }
 
 function formatScaledUnits(value: bigint, scale: number) {
@@ -157,40 +158,70 @@ function formatScaledUnits(value: bigint, scale: number) {
     return value.toString();
   }
 
-  const valueString = value.toString().padStart(scale + 1, "0");
-  const integerPart = valueString.slice(0, -scale);
-  const decimalPart = valueString.slice(-scale).replace(/0+$/, "");
+  const isNegative = value < 0n;
+  const absString = (isNegative ? -value : value)
+    .toString()
+    .padStart(scale + 1, "0");
+  const integerPart = absString.slice(0, -scale);
+  const decimalPart = absString.slice(-scale).replace(/0+$/, "");
+  const formatted = decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
 
-  return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
+  return isNegative ? `-${formatted}` : formatted;
 }
 
-function normalizeRawValue(
-  value: string | number | undefined,
-  min: string,
-  max: string,
+function clampScaledUnits(value: bigint, min: bigint, max: bigint) {
+  return clampToRange(value, min, max);
+}
+
+function getStepStartUnits(
+  draft: string,
+  minUnits: bigint,
+  maxUnits: bigint,
   scale: number,
 ) {
-  if (value === undefined || value === null) {
-    return "";
+  const parsedDraft = parseDraftToScaledUnits(draft, scale);
+
+  if (parsedDraft === null) {
+    return minUnits;
   }
 
-  const sanitized = sanitizeNumericInput(String(value), scale > 0);
+  return clampScaledUnits(parsedDraft, minUnits, maxUnits);
+}
 
-  if (!sanitized) {
-    return "";
-  }
-
-  const units = parseToScaledUnits(sanitized, scale);
+function stepDraft(
+  draft: string,
+  direction: 1 | -1,
+  min: number,
+  max: number,
+  step: number,
+  scale: number,
+) {
   const minUnits = parseToScaledUnits(min, scale);
   const maxUnits = parseToScaledUnits(max, scale);
-  const clampedUnits = clampToRange(units, minUnits, maxUnits);
+  const currentUnits = getStepStartUnits(draft, minUnits, maxUnits, scale);
+  const scaledStep = parseDraftToScaledUnits(Math.abs(step), scale) ?? 1n;
 
-  // Preserve in-progress decimal entry like "0.", "0.0", or "12.3400" while in range.
-  if (scale > 0 && hasDecimalSeparator(sanitized) && clampedUnits === units) {
-    return sanitized;
-  }
+  const nextUnits = clampScaledUnits(
+    currentUnits + scaledStep * BigInt(direction),
+    minUnits,
+    maxUnits,
+  );
 
-  return formatScaledUnits(clampedUnits, scale);
+  return formatScaledUnits(nextUnits, scale);
+}
+
+function getCanStep(
+  draft: string,
+  direction: 1 | -1,
+  min: number,
+  max: number,
+  scale: number,
+) {
+  const minUnits = parseToScaledUnits(min, scale);
+  const maxUnits = parseToScaledUnits(max, scale);
+  const currentUnits = getStepStartUnits(draft, minUnits, maxUnits, scale);
+
+  return direction === 1 ? currentUnits < maxUnits : currentUnits > minUnits;
 }
 
 type NumericStepperRootProps = {
@@ -201,10 +232,75 @@ type NumericStepperRootProps = {
   max?: number;
   step?: number;
   disabled?: boolean;
-  name?: string;
   className?: string;
   children: React.ReactNode;
 };
+
+export type NumericStepperValidity = {
+  valueMissing: boolean;
+  badInput: boolean;
+  rangeUnderflow: boolean;
+  rangeOverflow: boolean;
+  stepMismatch: boolean;
+  valid: boolean;
+};
+
+function getNumericValidity({
+  value,
+  required,
+  min,
+  max,
+  step,
+  scale,
+}: {
+  value: string;
+  required: boolean;
+  min: number;
+  max: number;
+  step: number;
+  scale: number;
+}): NumericStepperValidity {
+  if (value === "") {
+    const valueMissing = required;
+    return {
+      valueMissing,
+      badInput: false,
+      rangeUnderflow: false,
+      rangeOverflow: false,
+      stepMismatch: false,
+      valid: !valueMissing,
+    };
+  }
+
+  const parsedUnits = parseDraftToScaledUnits(value, scale);
+  if (parsedUnits === null) {
+    return {
+      valueMissing: false,
+      badInput: true,
+      rangeUnderflow: false,
+      rangeOverflow: false,
+      stepMismatch: false,
+      valid: false,
+    };
+  }
+
+  const minUnits = parseToScaledUnits(min, scale);
+  const maxUnits = parseToScaledUnits(max, scale);
+  const rangeUnderflow = parsedUnits < minUnits;
+  const rangeOverflow = parsedUnits > maxUnits;
+  const stepUnits = parseToScaledUnits(step, scale);
+  const stepMismatch =
+    stepUnits > 0n && (parsedUnits - minUnits) % stepUnits !== 0n;
+
+  return {
+    valueMissing: false,
+    badInput: false,
+    rangeUnderflow,
+    rangeOverflow,
+    stepMismatch,
+    valid: !rangeUnderflow && !rangeOverflow && !stepMismatch,
+  };
+}
 
 function NumericStepperRoot({
   value,
@@ -214,10 +310,31 @@ function NumericStepperRoot({
   max = 1_000_000_000,
   step = 1,
   disabled = false,
-  name,
   className,
   children,
 }: NumericStepperRootProps) {
+  if (!Number.isFinite(min)) {
+    throw new Error("NumericStepper requires a finite min value.");
+  }
+
+  if (!Number.isFinite(max)) {
+    throw new Error("NumericStepper requires a finite max value.");
+  }
+
+  if (!Number.isFinite(step)) {
+    throw new Error("NumericStepper requires a finite step value.");
+  }
+
+  if (step <= 0) {
+    throw new Error("NumericStepper requires step to be greater than 0.");
+  }
+
+  if (max < min) {
+    throw new Error(
+      "NumericStepper requires max to be greater than or equal to min.",
+    );
+  }
+
   const configuredScale = React.useMemo(
     () =>
       Math.max(
@@ -230,119 +347,93 @@ function NumericStepperRoot({
     [defaultValue, max, min, step, value],
   );
 
-  const minValue = String(Math.max(0, min));
-  const maxValue = String(Math.max(Number(minValue), max));
   const isControlled = value !== undefined;
 
   const [internalValue, setInternalValue] = React.useState(() =>
-    normalizeRawValue(defaultValue, minValue, maxValue, configuredScale),
+    sanitizeDraft(String(defaultValue)),
   );
 
-  const activeScale = React.useMemo(() => {
-    const currentValue = isControlled ? value : internalValue;
+  const draftValue = isControlled
+    ? sanitizeDraft(String(value ?? ""))
+    : internalValue;
 
-    if (!hasDecimalSeparator(currentValue)) {
-      return configuredScale;
-    }
-
-    return Math.max(configuredScale, 1, getFractionDigits(currentValue));
-  }, [configuredScale, internalValue, isControlled, value]);
-
-  const rawValue = normalizeRawValue(
-    isControlled ? value : internalValue,
-    minValue,
-    maxValue,
-    activeScale,
+  const activeScale = React.useMemo(
+    () => Math.max(configuredScale, getFractionDigits(draftValue)),
+    [configuredScale, draftValue],
   );
 
-  const latestValueRef = useLatestRef(rawValue);
+  const latestDraftRef = useLatestRef(draftValue);
   const latestScaleRef = useLatestRef(activeScale);
-  const latestMinRef = useLatestRef(minValue);
-  const latestMaxRef = useLatestRef(maxValue);
+  const latestMinRef = useLatestRef(min);
+  const latestMaxRef = useLatestRef(max);
   const latestStepRef = useLatestRef(step);
 
-  const setValue = React.useCallback(
-    (nextValue: string, options?: { clamp?: boolean }) => {
-      const clampValue = options?.clamp ?? true;
-      const allowDecimal =
-        latestScaleRef.current > 0 || hasDecimalSeparator(nextValue);
-      const sanitized = sanitizeNumericInput(nextValue, allowDecimal);
-      const targetScale = allowDecimal
-        ? Math.max(latestScaleRef.current, 1, getFractionDigits(sanitized))
-        : latestScaleRef.current;
-      const normalized = clampValue
-        ? normalizeRawValue(
-            sanitized,
-            latestMinRef.current,
-            latestMaxRef.current,
-            targetScale,
-          )
-        : sanitized;
+  const setDraftFromInput = React.useCallback(
+    (nextInput: string) => {
+      const nextValue = sanitizeDraft(nextInput);
 
       if (!isControlled) {
-        setInternalValue(normalized);
+        setInternalValue(nextValue);
       }
 
-      onValueChange?.(normalized);
+      if (nextValue !== latestDraftRef.current) {
+        onValueChange?.(nextValue);
+      }
     },
-    [isControlled, latestMaxRef, latestMinRef, latestScaleRef, onValueChange],
+    [isControlled, latestDraftRef, onValueChange],
   );
 
-  const stepBy = React.useCallback(
+  const stepValue = React.useCallback(
     (direction: 1 | -1) => {
-      const currentValue =
-        latestValueRef.current === ""
-          ? latestMinRef.current
-          : latestValueRef.current;
-      const currentUnits = parseToScaledUnits(
-        currentValue,
-        latestScaleRef.current,
-      );
-      const minUnits = parseToScaledUnits(
+      const steppedValue = stepDraft(
+        latestDraftRef.current,
+        direction,
         latestMinRef.current,
-        latestScaleRef.current,
-      );
-      const maxUnits = parseToScaledUnits(
         latestMaxRef.current,
+        latestStepRef.current,
         latestScaleRef.current,
       );
-      const scaledStep =
-        parseToScaledUnits(
-          Math.abs(latestStepRef.current) || 1,
-          latestScaleRef.current,
-        ) || 1n;
 
-      const nextUnits = clampToRange(
-        currentUnits + scaledStep * BigInt(direction),
-        minUnits,
-        maxUnits,
-      );
+      if (!isControlled) {
+        setInternalValue(steppedValue);
+      }
 
-      setValue(formatScaledUnits(nextUnits, latestScaleRef.current), {
-        clamp: false,
-      });
+      if (steppedValue !== latestDraftRef.current) {
+        onValueChange?.(steppedValue);
+      }
     },
     [
+      latestDraftRef,
       latestMaxRef,
       latestMinRef,
       latestScaleRef,
       latestStepRef,
-      latestValueRef,
-      setValue,
+      isControlled,
+      onValueChange,
     ],
   );
 
   const contextValue = React.useMemo<NumericStepperContextValue>(
     () => ({
-      value: rawValue,
+      value: draftValue,
       disabled,
-      min: minValue,
-      max: maxValue,
+      min,
+      max,
+      step,
       scale: activeScale,
-      setValue,
-      stepBy,
+      setDraftFromInput,
+      stepValue,
     }),
-    [activeScale, disabled, maxValue, minValue, rawValue, setValue, stepBy],
+    [
+      activeScale,
+      disabled,
+      draftValue,
+      max,
+      min,
+      setDraftFromInput,
+      step,
+      stepValue,
+    ],
   );
 
   return (
@@ -353,30 +444,120 @@ function NumericStepperRoot({
       >
         {children}
       </InputGroup>
-      {name ? <input type="hidden" name={name} value={rawValue} /> : null}
     </NumericStepperContext.Provider>
   );
 }
 
 type NumericStepperInputProps = Omit<
   React.ComponentPropsWithoutRef<typeof InputGroupInput>,
-  "defaultValue" | "inputMode" | "pattern" | "value"
->;
+  "defaultValue" | "inputMode" | "pattern" | "type" | "value"
+> & {
+  /**
+   * Optional. When provided, enables custom numeric form validation via
+   * `setCustomValidity`.
+   *
+   * - `data-invalid` and `aria-invalid` are always driven by internal numeric validity.
+   * - Custom numeric browser form-blocking/tooltip behavior is opt-in: supply this prop
+   *   and return a non-empty string when invalid.
+   * - Native constraints passed to the input, such as `required`, may still use the
+   *   browser's built-in validation behavior.
+   * - Return an empty string, or omit this prop, to skip custom numeric validation UI.
+   * - The primitive never hard-codes validation messages; all custom copy lives in the caller.
+   */
+  getValidationMessage?: (validity: NumericStepperValidity) => string;
+};
 
 const NumericStepperInput = React.forwardRef<
   HTMLInputElement,
   NumericStepperInputProps
->(function NumericStepperInput({ className, ...props }, forwardedRef) {
-  const { value, disabled, min, stepBy, setValue } = useNumericStepperContext();
+>(function NumericStepperInput(
+  { className, getValidationMessage: getMessageProp, ...props },
+  forwardedRef,
+) {
+  const {
+    value,
+    disabled,
+    min,
+    max,
+    step,
+    scale,
+    setDraftFromInput,
+    stepValue,
+  } = useNumericStepperContext();
+
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const setRef = React.useCallback(
+    (node: HTMLInputElement | null) => {
+      inputRef.current = node;
+
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+    },
+    [forwardedRef],
+  );
+
+  const validationScale = React.useMemo(
+    () =>
+      Math.max(
+        scale,
+        getFractionDigits(value),
+        getFractionDigits(min),
+        getFractionDigits(max),
+        getFractionDigits(step),
+      ),
+    [max, min, scale, step, value],
+  );
+
+  const validity = React.useMemo(
+    () =>
+      getNumericValidity({
+        value,
+        required: props.required === true,
+        min,
+        max,
+        step,
+        scale: validationScale,
+      }),
+    [max, min, props.required, step, validationScale, value],
+  );
+
+  React.useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+
+    if (!getMessageProp || validity.valid) {
+      el.setCustomValidity("");
+      return;
+    }
+
+    el.setCustomValidity(getMessageProp(validity) ?? "");
+  }, [getMessageProp, validity]);
+
+  const ariaValueNow = React.useMemo(() => {
+    const parsedUnits = parseDraftToScaledUnits(value, validationScale);
+    if (parsedUnits === null) return undefined;
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : undefined;
+  }, [validationScale, value]);
 
   return (
     <InputGroupInput
       {...props}
-      ref={forwardedRef}
+      ref={setRef}
       value={value}
       disabled={disabled || props.disabled}
       inputMode="decimal"
-      pattern="[0-9]*[.]?[0-9]*"
+      pattern="-?[0-9]*[.]?[0-9]*"
+      role="spinbutton"
+      aria-valuemin={min}
+      aria-valuemax={max}
+      type="text"
+      aria-valuenow={ariaValueNow}
+      aria-invalid={validity.valid ? undefined : true}
+      data-invalid={validity.valid ? undefined : true}
       onKeyDown={(event) => {
         props.onKeyDown?.(event);
 
@@ -386,26 +567,17 @@ const NumericStepperInput = React.forwardRef<
 
         if (event.key === "ArrowUp") {
           event.preventDefault();
-          stepBy(1);
+          stepValue(1);
         }
 
         if (event.key === "ArrowDown") {
           event.preventDefault();
-          stepBy(-1);
+          stepValue(-1);
         }
       }}
       onInput={(event) => {
-        setValue(event.currentTarget.value, { clamp: false });
+        setDraftFromInput(event.currentTarget.value);
         props.onInput?.(event);
-      }}
-      onBlur={(event) => {
-        if (value === "") {
-          setValue(min, { clamp: true });
-        } else {
-          setValue(value, { clamp: true });
-        }
-
-        props.onBlur?.(event);
       }}
       className={cn("min-w-0 flex-1 text-center tabular-nums", className)}
     />
@@ -419,24 +591,36 @@ type NumericStepperControlProps = Omit<
   children?: React.ReactNode;
 };
 
+type NumericStepperControlsProps = React.ComponentPropsWithoutRef<"div">;
+
+function NumericStepperControls({
+  className,
+  ...props
+}: NumericStepperControlsProps) {
+  return (
+    <div
+      {...props}
+      data-slot="numeric-stepper-controls"
+      className={cn(
+        "flex h-full shrink-0 flex-col overflow-hidden border-l border-input-border",
+        className,
+      )}
+    />
+  );
+}
+
 function NumericStepperDecrement({
   className,
   children,
   ...props
 }: NumericStepperControlProps) {
-  const { value, disabled, min, max, stepBy } = useNumericStepperContext();
-  const scale = Math.max(
-    getFractionDigits(value),
-    getFractionDigits(min),
-    getFractionDigits(max),
-  );
-  const currentUnits = parseToScaledUnits(value || min, scale);
-  const minUnits = parseToScaledUnits(min, scale);
-  const canDecrement = currentUnits > minUnits;
+  const { value, disabled, min, max, scale, stepValue } =
+    useNumericStepperContext();
+  const canDecrement = getCanStep(value, -1, min, max, scale);
 
   const { start, stop } = usePointerRepeat(() => {
     if (canDecrement) {
-      stepBy(-1);
+      stepValue(-1);
     }
   });
 
@@ -476,16 +660,16 @@ function NumericStepperDecrement({
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           if (canDecrement) {
-            stepBy(-1);
+            stepValue(-1);
           }
         }
       }}
       className={cn(
-        "h-full rounded-none border-0 bg-transparent px-3 text-input-text-secondary shadow-none focus-visible:ring-0",
+        "h-1/2 min-h-0 rounded-none border-0 border-t border-input-border bg-transparent p-0 text-input-text-secondary shadow-none focus-visible:ring-0",
         className,
       )}
     >
-      {children ?? <MinusIcon size={16} weight="bold" />}
+      {children ?? <CaretDownIcon weight="bold" />}
     </Button>
   );
 }
@@ -495,19 +679,13 @@ function NumericStepperIncrement({
   children,
   ...props
 }: NumericStepperControlProps) {
-  const { value, disabled, min, max, stepBy } = useNumericStepperContext();
-  const scale = Math.max(
-    getFractionDigits(value),
-    getFractionDigits(min),
-    getFractionDigits(max),
-  );
-  const currentUnits = parseToScaledUnits(value || min, scale);
-  const maxUnits = parseToScaledUnits(max, scale);
-  const canIncrement = currentUnits < maxUnits;
+  const { value, disabled, min, max, scale, stepValue } =
+    useNumericStepperContext();
+  const canIncrement = getCanStep(value, 1, min, max, scale);
 
   const { start, stop } = usePointerRepeat(() => {
     if (canIncrement) {
-      stepBy(1);
+      stepValue(1);
     }
   });
 
@@ -547,16 +725,16 @@ function NumericStepperIncrement({
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           if (canIncrement) {
-            stepBy(1);
+            stepValue(1);
           }
         }
       }}
       className={cn(
-        "h-full rounded-none border-0 bg-transparent px-3 text-input-text-secondary shadow-none focus-visible:ring-0",
+        "h-1/2 min-h-0 rounded-none border-0 bg-transparent p-0 text-input-text-secondary shadow-none focus-visible:ring-0",
         className,
       )}
     >
-      {children ?? <PlusIcon size={16} weight="bold" />}
+      {children ?? <CaretUpIcon weight="bold" />}
     </Button>
   );
 }
@@ -564,6 +742,7 @@ function NumericStepperIncrement({
 export const NumericStepper = {
   Root: NumericStepperRoot,
   Input: NumericStepperInput,
+  Controls: NumericStepperControls,
   Decrease: NumericStepperDecrement,
   Increase: NumericStepperIncrement,
 };
