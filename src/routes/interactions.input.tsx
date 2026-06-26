@@ -14,7 +14,7 @@ import { ArrowRightIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 
-import { NumericStepper } from "@/features/numeric-stepper";
+import { NumericInput } from "@/ui/numeric-input";
 import {
   OTPInputGroup,
   OTPInputRoot,
@@ -27,6 +27,7 @@ import { useExpiryMask } from "@/hooks/use-expiry-mask";
 import { usePhoneMask } from "@/hooks/use-phone-mask";
 import { useQueryState } from "@/hooks/use-query-state";
 import { useQueryStates } from "@/hooks/use-query-states";
+import { useLocale } from "@/lib/locale-context";
 import { parseAsString } from "@/lib/query-state";
 
 export const Route = createFileRoute("/interactions/input")({
@@ -88,7 +89,7 @@ const FilterGroup = {
 
   SearchCluster({ children }: FilterGroupSearchClusterProps) {
     return (
-      <InputGroup className="h-10 w-full min-w-0 sm:flex-1">
+      <InputGroup className="h-auto w-full min-w-0 flex-wrap sm:h-10 sm:flex-1 sm:flex-nowrap">
         {children}
       </InputGroup>
     );
@@ -110,7 +111,7 @@ const FilterGroup = {
       >
         <SelectTrigger
           className={
-            className ?? "w-full min-w-0 sm:w-auto sm:min-w-[10rem] sm:flex-1"
+            className ?? "w-full min-w-0 sm:w-auto sm:min-w-40 sm:flex-1"
           }
         >
           <SelectValue placeholder={placeholder} />
@@ -166,7 +167,7 @@ function InputCard({
   footer,
 }: InputCardProps) {
   return (
-    <article className="row-span-3 grid grid-rows-subgrid gap-2 border border-stroke-default-secondary bg-surface-primary p-4 lg:[&:not(:nth-child(3n+1))]:border-l-0 sm:[&:nth-child(2n)]:border-l-0 lg:[&:nth-child(3n+1)]:border-l">
+    <article className="row-span-3 grid grid-rows-subgrid gap-2 border border-stroke-default-secondary bg-surface-primary p-4 lg:not-nth-[3n+1]:border-l-0 sm:nth-[2n]:border-l-0 lg:nth-[3n+1]:border-l">
       <div className="space-y-1">
         <Label
           htmlFor={id}
@@ -380,15 +381,17 @@ function QueryStateInput() {
   );
 }
 
-function NumericStepperInput() {
+function NumericInputDemo() {
+  const { locale } = useLocale();
   const [plainValue, setPlainValue] = React.useState("12");
   const [currencyValue, setCurrencyValue] = React.useState("25.99");
+  const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
     <InputCard
       id="numeric-stepper-input"
-      title="Numeric Stepper Compound API"
-      description="A reusable stepper with named subcomponents that supports integer or decimal values based on your configured input."
+      title="Numeric Input Compound API"
+      description="A reusable input with named subcomponents that supports integer or decimal values based on your configured input."
       footer={`Plain value: ${plainValue || "-"} | Decimal value: ${currencyValue || "-"}`}
     >
       <div className="space-y-4">
@@ -399,18 +402,20 @@ function NumericStepperInput() {
           >
             Plain numeric
           </Label>
-          <NumericStepper.Root
+          <NumericInput.Root
             value={plainValue}
             onValueChange={setPlainValue}
             min={0}
             max={100}
+            locale={locale}
+            dir={dir}
           >
-            <NumericStepper.Input id="plain-stepper-input" />
-            <NumericStepper.Controls>
-              <NumericStepper.Increase />
-              <NumericStepper.Decrease />
-            </NumericStepper.Controls>
-          </NumericStepper.Root>
+            <NumericInput.Field id="plain-stepper-input" />
+            <NumericInput.Controls>
+              <NumericInput.Increment />
+              <NumericInput.Decrement />
+            </NumericInput.Controls>
+          </NumericInput.Root>
         </div>
 
         <div className="space-y-2">
@@ -420,19 +425,21 @@ function NumericStepperInput() {
           >
             Decimal value
           </Label>
-          <NumericStepper.Root
+          <NumericInput.Root
             value={currencyValue}
             onValueChange={setCurrencyValue}
             min={0}
             max={1000000}
             step={0.01}
+            locale={locale}
+            dir={dir}
           >
-            <NumericStepper.Input id="currency-stepper-input" />
-            <NumericStepper.Controls>
-              <NumericStepper.Increase aria-label="Increase currency amount" />
-              <NumericStepper.Decrease aria-label="Decrease currency amount" />
-            </NumericStepper.Controls>
-          </NumericStepper.Root>
+            <NumericInput.Field id="currency-stepper-input" />
+            <NumericInput.Controls>
+              <NumericInput.Increment aria-label="Increase currency amount" />
+              <NumericInput.Decrement aria-label="Decrease currency amount" />
+            </NumericInput.Controls>
+          </NumericInput.Root>
         </div>
       </div>
     </InputCard>
@@ -520,7 +527,7 @@ function FilterGroupInput() {
           >
             <SelectTrigger
               data-slot="input-group-control"
-              className="h-full w-auto min-w-52 flex-none rounded-none border-0 bg-transparent px-3 shadow-none focus-visible:ring-0"
+              className="h-10 w-full min-w-0 flex-none rounded-none border-0 bg-transparent px-3 shadow-none focus-visible:ring-0 sm:h-full sm:w-auto sm:min-w-52"
             >
               <SelectValue placeholder="Search by">
                 {(value) => (
@@ -543,15 +550,20 @@ function FilterGroupInput() {
           </Select>
 
           <Separator
+            orientation="horizontal"
+            className="basis-full bg-input-border data-[orientation=horizontal]:h-0.5 sm:hidden"
+          />
+
+          <Separator
             orientation="vertical"
-            className="bg-input-border data-[orientation=vertical]:w-0.5"
+            className="hidden bg-input-border data-[orientation=vertical]:w-0.5 sm:block"
           />
 
           <FilterGroup.SearchInput
             value={keyword}
             onValueChange={setKeyword}
             placeholder="Enter keyword(s)..."
-            className="w-full min-w-[16rem] flex-1"
+            className="w-full min-w-0 flex-1 basis-full sm:min-w-[16rem] sm:basis-auto"
           />
         </FilterGroup.SearchCluster>
 
@@ -626,7 +638,7 @@ function RouteComponent() {
             <div className="grid auto-rows-[auto_minmax(0,1fr)_auto] grid-cols-1 items-stretch sm:grid-cols-2 lg:grid-cols-3">
               <OtpInput />
               <QueryStateInput />
-              <NumericStepperInput />
+              <NumericInputDemo />
             </div>
           </section>
         </div>
