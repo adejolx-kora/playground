@@ -1,52 +1,35 @@
-import { useRouter, useRouterState } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 
 import {
+  defaultQueryStateOptions,
   parseAsString,
-  type QueryParser,
-  type QueryStateOptions,
+  readQueryValue,
+  toSearchString,
+  useQueryStateLocation,
+  useQueryStateNavigate,
+  writeQueryValue,
 } from "@/lib/query-state";
+import type { QueryParser, QueryStateOptions } from "@/lib/query-state";
 
 type QuerySetterOptions = QueryStateOptions;
-
-const defaultOptions: Required<QueryStateOptions> = {
-  history: "replace",
-  clearOnDefault: true,
-};
-
-const isNullish = (value: unknown) => value === null || value === undefined;
-
-const readValue = <T>(
-  searchParams: URLSearchParams,
-  key: string,
-  parser: QueryParser<T>,
-) => {
-  const parsed = parser.parse(searchParams.get(key));
-
-  if (isNullish(parsed) && !isNullish(parser.defaultValue)) {
-    return parser.defaultValue;
-  }
-
-  return parsed;
-};
 
 export const useQueryState = <T>(
   key: string,
   parser: QueryParser<T> = parseAsString as QueryParser<T>,
   options?: QueryStateOptions,
 ) => {
-  const router = useRouter();
-  const location = useRouterState({ select: (state) => state.location });
+  const location = useQueryStateLocation();
+  const navigate = useQueryStateNavigate();
 
   const mergedOptions = useMemo(
-    () => ({ ...defaultOptions, ...options }),
+    () => ({ ...defaultQueryStateOptions, ...options }),
     [options],
   );
 
   const value = useMemo(() => {
     const searchParams = new URLSearchParams(location.searchStr);
-    return readValue(searchParams, key, parser);
-  }, [key, parser, location.searchStr]);
+    return readQueryValue(searchParams, key, parser);
+  }, [key, location.searchStr, parser]);
 
   const setValue = useCallback(
     (
@@ -54,44 +37,33 @@ export const useQueryState = <T>(
       setterOptions?: QuerySetterOptions,
     ) => {
       const localOptions = { ...mergedOptions, ...setterOptions };
-      const searchParams = new URLSearchParams(router.state.location.searchStr);
-      const currentValue = readValue(searchParams, key, parser);
+      const searchParams = new URLSearchParams(location.searchStr);
 
       const resolvedValue =
         typeof nextValue === "function"
-          ? (nextValue as (previousValue: T | null) => T | null)(currentValue)
+          ? (nextValue as (previousValue: T | null) => T | null)(
+              readQueryValue(searchParams, key, parser),
+            )
           : nextValue;
 
-      const isDefaultValue =
-        !isNullish(parser.defaultValue) &&
-        !isNullish(resolvedValue) &&
-        (parser.eq ?? Object.is)(resolvedValue, parser.defaultValue);
+      writeQueryValue(searchParams, key, resolvedValue, parser, localOptions);
 
-      if (
-        isNullish(resolvedValue) ||
-        (localOptions.clearOnDefault && isDefaultValue)
-      ) {
-        searchParams.delete(key);
-      } else {
-        const serialized = parser.serialize(resolvedValue);
+      const nextSearchStr = toSearchString(searchParams);
 
-        if (serialized === null) {
-          searchParams.delete(key);
-        } else {
-          searchParams.set(key, serialized);
-        }
+      if (nextSearchStr === location.searchStr) {
+        return;
       }
 
-      const nextSearch = Object.fromEntries(searchParams.entries());
-
-      void router.navigate({
-        to: router.state.location.pathname,
-        hash: router.state.location.hash,
-        search: nextSearch,
-        replace: localOptions.history === "replace",
-      });
+      void navigate(
+        {
+          pathname: location.pathname,
+          searchStr: nextSearchStr,
+          hash: location.hash,
+        },
+        localOptions,
+      );
     },
-    [key, mergedOptions, parser, router],
+    [key, location, mergedOptions, navigate, parser],
   );
 
   return [value, setValue] as const;
