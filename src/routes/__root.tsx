@@ -7,6 +7,9 @@ import {
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   Sidebar,
   SidebarRail,
   SidebarInset,
@@ -19,7 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@korapay/react";
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  Link,
+  Outlet,
+  useRouter,
+  useRouterState,
+} from "@tanstack/react-router";
+import { useCallback, useMemo } from "react";
 
 import {
   APP_LOCALE_LABELS,
@@ -27,6 +37,7 @@ import {
   isAppLocale,
   useLocale,
 } from "@/lib/locale-context";
+import { QueryStateProvider, toQueryLocationHref } from "@/lib/query-state";
 
 /* eslint-disable react-refresh/only-export-components */
 
@@ -37,6 +48,7 @@ export const Route = createRootRoute({
 type MenuItem = {
   label: string;
   url?: string;
+  items?: MenuItem[];
 };
 
 type MenuSection = {
@@ -57,7 +69,18 @@ const sections: Array<MenuSection> = [
     label: "Views",
     items: [
       { label: "Login", url: "/views/login" },
-      { label: "Onboarding", url: "/views/onboarding" },
+      {
+        label: "Onboarding",
+        url: "/views/onboarding",
+        items: [
+          { label: "Vanilla Utility", url: "/views/onboarding/vanilla" },
+          {
+            label: "React Hook Form",
+            url: "/views/onboarding/react-hook-form",
+          },
+          { label: "Formik", url: "/views/onboarding/formik" },
+        ],
+      },
       { label: "Wizard modal", url: "/views/wizard-modal" },
     ],
   },
@@ -66,8 +89,56 @@ const sections: Array<MenuSection> = [
 function RootComponent() {
   return (
     <AppLocaleProvider>
-      <RootLayout />
+      <RootQueryStateProvider>
+        <RootLayout />
+      </RootQueryStateProvider>
     </AppLocaleProvider>
+  );
+}
+
+function RootQueryStateProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const location = useRouterState({
+    select: (state) => state.location,
+  });
+
+  const queryStateLocation = useMemo(
+    () => ({
+      pathname: location.pathname,
+      searchStr: location.searchStr,
+      hash: location.hash,
+    }),
+    [location.hash, location.pathname, location.searchStr],
+  );
+
+  const navigate = useCallback(
+    (
+      nextLocation: {
+        pathname: string;
+        searchStr: string;
+        hash: string;
+      },
+      options: {
+        history: "replace" | "push";
+        clearOnDefault: boolean;
+      },
+    ) => {
+      return router.navigate({
+        href: toQueryLocationHref(nextLocation),
+        replace: options.history === "replace",
+      });
+    },
+    [router],
+  );
+
+  return (
+    <QueryStateProvider location={queryStateLocation} navigate={navigate}>
+      {children}
+    </QueryStateProvider>
   );
 }
 
@@ -104,6 +175,9 @@ function LocaleSelectControl() {
 
 function RootLayout() {
   const { locale } = useLocale();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
   const isRtl = locale === "ar";
   const sidebarSide = isRtl ? "right" : "left";
   const dir = isRtl ? "rtl" : "ltr";
@@ -120,26 +194,39 @@ function RootLayout() {
                   {section.label}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
-                  <SidebarMenu>
-                    {section.items.map((item) => (
-                      <SidebarMenuItem key={item.label}>
-                        <SidebarMenuButton
-                          render={
-                            <Link
-                              to={item.url || "#"}
-                              activeOptions={{ exact: true }}
-                              activeProps={{
-                                "data-active": true,
-                              }}
-                            />
-                          }
-                          tooltip={item.label}
-                        >
-                          <span>{item.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
+                    <SidebarMenu>
+                      {section.items.map((item) => (
+                        <SidebarMenuItem key={item.label}>
+                          <SidebarMenuButton
+                            isActive={
+                              item.url ? pathname.startsWith(item.url) : false
+                            }
+                            render={
+                              <Link
+                                to={item.url || "#"}
+                              />
+                            }
+                            tooltip={item.label}
+                          >
+                            <span>{item.label}</span>
+                          </SidebarMenuButton>
+                          {item.items?.length ? (
+                            <SidebarMenuSub>
+                              {item.items.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.label}>
+                                  <SidebarMenuSubButton
+                                    isActive={pathname === subItem.url}
+                                    render={<Link to={subItem.url || "#"} />}
+                                  >
+                                    <span>{subItem.label}</span>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          ) : null}
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
             ))}
