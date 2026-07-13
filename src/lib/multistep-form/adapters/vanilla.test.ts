@@ -187,10 +187,7 @@ describe("createFormikAdapter", () => {
     });
 
     const { result } = renderHook(() =>
-      useMultiStepForm<
-        { name: string; email: string },
-        "details" | "review"
-      >({
+      useMultiStepForm<{ name: string; email: string }, "details" | "review">({
         steps: [
           { id: "details", fields: ["name"] },
           { id: "review", fields: ["email"] },

@@ -13,9 +13,13 @@ describe("path utils", () => {
   });
 
   it("supports bracket array paths", () => {
-    expect(getByPath({ items: [{ name: "Ada" }] }, "items[0].name")).toBe("Ada");
+    expect(getByPath({ items: [{ name: "Ada" }] }, "items[0].name")).toBe(
+      "Ada",
+    );
     expect(getByPath({ items: [{ name: "Ada" }] }, "items.0.name")).toBe("Ada");
-    expect(getByPath({ profile: { name: "Ada" } }, "profile['name']")).toBe("Ada");
+    expect(getByPath({ profile: { name: "Ada" } }, "profile['name']")).toBe(
+      "Ada",
+    );
   });
 
   it("preserves unrelated branches when setting immutably", () => {

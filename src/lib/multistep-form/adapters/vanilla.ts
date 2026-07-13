@@ -1,13 +1,18 @@
 import * as React from "react";
 
-import { getByPath, setByPathImmutable, setManyByPathImmutable } from "../utils/path";
-import { hasFieldError } from "../utils/state";
 import type {
   FormValues,
   MultiStepFormAdapter,
   MultiStepValidationResult,
   ValidationErrors,
 } from "../types";
+
+import {
+  getByPath,
+  setByPathImmutable,
+  setManyByPathImmutable,
+} from "../utils/path";
+import { hasFieldError } from "../utils/state";
 
 export type VanillaValidationErrors = ValidationErrors;
 
@@ -55,7 +60,7 @@ type Updater<TValue> = TValue | ((current: TValue) => TValue);
 const EMPTY_ERRORS: VanillaValidationErrors = {};
 const EMPTY_TOUCHED: Record<string, unknown> = {};
 
-const resolveNextValue = <TValue,>(
+const resolveNextValue = <TValue>(
   next: Updater<TValue>,
   current: TValue,
 ): TValue =>
@@ -76,7 +81,9 @@ const updateObjectPath = (
 };
 
 const isValidationResultObject = (
-  value: MultiStepValidationResult<VanillaValidationErrors> | VanillaValidationErrors,
+  value:
+    | MultiStepValidationResult<VanillaValidationErrors>
+    | VanillaValidationErrors,
 ): value is {
   valid: boolean;
   errors?: VanillaValidationErrors;
@@ -252,7 +259,8 @@ export function createVanillaFormStore<TValues extends FormValues>(options: {
       });
     },
     reset: (nextValues) => {
-      const values = nextValues === undefined ? options.initialValues : nextValues;
+      const values =
+        nextValues === undefined ? options.initialValues : nextValues;
 
       commit({
         values,
@@ -282,13 +290,11 @@ export function useVanillaFormField<
     store,
     (state) => getByPath(state.values, path) as TValue,
   );
-  const error = useVanillaFormStore(
-    store,
-    (state) => getByPath(state.errors, path),
+  const error = useVanillaFormStore(store, (state) =>
+    getByPath(state.errors, path),
   );
-  const touched = useVanillaFormStore(
-    store,
-    (state) => Boolean(getByPath(state.touched, path)),
+  const touched = useVanillaFormStore(store, (state) =>
+    Boolean(getByPath(state.touched, path)),
   );
 
   const setValue = React.useCallback(
@@ -357,13 +363,16 @@ function createValidateFunction<TValues extends FormValues>(options: {
     values: TValues;
     fields?: readonly string[];
   }) => VanillaValidationResult;
-}): (
-  fields?: readonly string[],
-) => Promise<{
+}): (fields?: readonly string[]) => Promise<{
   valid: boolean;
   errors?: VanillaValidationErrors;
 }> {
-  const { getValues, getErrors, writeErrors, validate: validateBridge } = options;
+  const {
+    getValues,
+    getErrors,
+    writeErrors,
+    validate: validateBridge,
+  } = options;
 
   return async (fields?: readonly string[]) => {
     if (!validateBridge) {

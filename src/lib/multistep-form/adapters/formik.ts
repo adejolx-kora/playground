@@ -1,6 +1,7 @@
+import type { FormValues, MultiStepFormAdapter } from "../types";
+
 import { getByPath, setManyByPathImmutable } from "../utils/path";
 import { hasFieldError } from "../utils/state";
-import type { FormValues, MultiStepFormAdapter } from "../types";
 
 export function createFormikAdapter<TValues extends FormValues>(bridge: {
   values: TValues;

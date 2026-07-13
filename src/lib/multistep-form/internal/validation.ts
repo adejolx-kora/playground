@@ -9,7 +9,9 @@ export type NormalizedValidationResult = {
   errors?: ValidationErrors;
 };
 
-export function normalizeValidationResult<TValues extends Record<string, unknown>>(
+export function normalizeValidationResult<
+  TValues extends Record<string, unknown>,
+>(
   adapter: MultiStepFormAdapter<TValues>,
   result: MultiStepValidationResult,
 ): NormalizedValidationResult {

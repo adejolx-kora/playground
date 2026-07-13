@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 
-import { QueryStateContext } from "./query-state-context";
 import type { QueryStateProviderProps } from "./query-state-types";
+
+import { QueryStateContext } from "./query-state-context";
 
 export function QueryStateProvider({
   children,

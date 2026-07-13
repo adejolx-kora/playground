@@ -82,7 +82,9 @@ export type MultiStepFormAdapter<TValues extends FormValues> = {
   validateFields?: (
     fields: readonly string[],
   ) => MultiStepValidationResult | Promise<MultiStepValidationResult>;
-  validateForm?: () => MultiStepValidationResult | Promise<MultiStepValidationResult>;
+  validateForm?: () =>
+    | MultiStepValidationResult
+    | Promise<MultiStepValidationResult>;
 
   touchFields?: (fields: readonly string[]) => void | Promise<void>;
   focusField?: (field: string) => void | Promise<void>;

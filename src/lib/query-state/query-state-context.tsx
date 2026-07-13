@@ -1,11 +1,12 @@
 import { createContext, useContext, useSyncExternalStore } from "react";
 
-import { toQueryLocationHref } from "./query-state";
 import type {
   QueryLocation,
   QueryNavigation,
   QueryStateContextValue,
 } from "./query-state-types";
+
+import { toQueryLocationHref } from "./query-state";
 
 export const QueryStateContext = createContext<QueryStateContextValue | null>(
   null,
@@ -122,10 +123,7 @@ export const useQueryStateLocation = () => {
       isProviderControlled
         ? context.location
         : browserLocationStore.getSnapshot(),
-    () =>
-      isProviderControlled
-        ? context.location
-        : getServerLocation(),
+    () => (isProviderControlled ? context.location : getServerLocation()),
   );
 };
 

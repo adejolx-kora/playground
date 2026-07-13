@@ -24,7 +24,11 @@ export const readQueryValue = <T>(
 
   // Defaults only apply when the query param is absent.
   // Present-but-invalid values intentionally stay null.
-  if (values.length === 0 && isNullish(parsed) && !isNullish(parser.defaultValue)) {
+  if (
+    values.length === 0 &&
+    isNullish(parsed) &&
+    !isNullish(parser.defaultValue)
+  ) {
     return parser.defaultValue;
   }
 

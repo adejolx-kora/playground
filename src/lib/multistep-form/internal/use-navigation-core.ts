@@ -19,11 +19,7 @@ type NavigationCoreOptions<
   steps: readonly TStep[];
   initialStepId?: TStepId;
   onError?: (error: unknown) => void;
-  onStepChange?: (payload: {
-    from: TStep;
-    to: TStep;
-    toIndex: number;
-  }) => void;
+  onStepChange?: (payload: { from: TStep; to: TStep; toIndex: number }) => void;
 };
 
 type NavigationCoreApi<
@@ -150,10 +146,17 @@ export function useNavigationCore<
 
   const [storedStepIndex, setStoredStepIndex] = useState(computedInitialIndex);
   const [visitedStepIdsSet, setVisitedStepIdsSet] = useState<Set<TStepId>>(() =>
-    getVisitedStepIds<TStepId, TStep>(steps, stepIndexById, computedInitialIndex),
+    getVisitedStepIds<TStepId, TStep>(
+      steps,
+      stepIndexById,
+      computedInitialIndex,
+    ),
   );
   const [isBusy, setIsBusy] = useState(false);
-  const currentStepIndex = Math.max(0, Math.min(storedStepIndex, steps.length - 1));
+  const currentStepIndex = Math.max(
+    0,
+    Math.min(storedStepIndex, steps.length - 1),
+  );
   const currentStep = steps[currentStepIndex];
   const pendingActionRef = useRef<NavigationAction | null>(null);
   const previousInitialStepIdRef = useRef<TStepId | undefined>(initialStepId);
@@ -172,7 +175,12 @@ export function useNavigationCore<
     const nextIndex = Math.max(0, steps.length - 1);
     setStoredStepIndex(nextIndex);
     setVisitedStepIdsSet((previous) =>
-      getVisitedStepIds<TStepId, TStep>(steps, stepIndexById, nextIndex, previous),
+      getVisitedStepIds<TStepId, TStep>(
+        steps,
+        stepIndexById,
+        nextIndex,
+        previous,
+      ),
     );
   }, [stepIndexById, steps, storedStepIndex]);
 
@@ -190,7 +198,11 @@ export function useNavigationCore<
     previousInitialStepIdRef.current = initialStepId;
     setStoredStepIndex(computedInitialIndex);
     setVisitedStepIdsSet(
-      getVisitedStepIds<TStepId, TStep>(steps, stepIndexById, computedInitialIndex),
+      getVisitedStepIds<TStepId, TStep>(
+        steps,
+        stepIndexById,
+        computedInitialIndex,
+      ),
     );
   }, [computedInitialIndex, initialStepId, stepIndexById, steps]);
 
@@ -264,7 +276,11 @@ export function useNavigationCore<
     setIsBusy(false);
     setStoredStepIndex(computedInitialIndex);
     setVisitedStepIdsSet(
-      getVisitedStepIds<TStepId, TStep>(steps, stepIndexById, computedInitialIndex),
+      getVisitedStepIds<TStepId, TStep>(
+        steps,
+        stepIndexById,
+        computedInitialIndex,
+      ),
     );
   }, [computedInitialIndex, stepIndexById, steps]);
 

@@ -171,7 +171,9 @@ export const setManyByPathImmutable = (
       const part = parts[index];
       const isLast = index === parts.length - 1;
       const key =
-        Array.isArray(currentTarget) && isArrayIndex(part) ? Number(part) : part;
+        Array.isArray(currentTarget) && isArrayIndex(part)
+          ? Number(part)
+          : part;
 
       if (isLast) {
         currentTarget[key] = entry.value;

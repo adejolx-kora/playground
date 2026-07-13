@@ -6,7 +6,12 @@ export type AppLocale = "en" | "fr" | "zh" | "ar";
 
 const STORAGE_KEY = "korapay.locale";
 
-export const supportedLocales = ["en", "fr", "zh", "ar"] as const satisfies ReadonlyArray<AppLocale>;
+export const supportedLocales = [
+  "en",
+  "fr",
+  "zh",
+  "ar",
+] as const satisfies ReadonlyArray<AppLocale>;
 
 export const APP_LOCALE_LABELS: Record<AppLocale, string> = {
   en: "English",
@@ -92,7 +97,9 @@ function getDocumentDirection(locale: AppLocale): "ltr" | "rtl" {
 }
 
 export function AppLocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = React.useState<AppLocale>(() => getInitialLocale());
+  const [locale, setLocaleState] = React.useState<AppLocale>(() =>
+    getInitialLocale(),
+  );
 
   React.useEffect(() => {
     if (typeof window === "undefined") {
@@ -125,7 +132,9 @@ export function AppLocaleProvider({ children }: { children: React.ReactNode }) {
     [locale],
   );
 
-  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
+  return (
+    <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
+  );
 }
 
 export const LocaleProvider = AppLocaleProvider;
