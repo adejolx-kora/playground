@@ -191,7 +191,10 @@ export function getStepStartScaledUnits(
   draft: string,
   constraints: ScaledConstraintUnits,
 ) {
-  const parsedDraft = parseNormalizedDraftToScaledUnits(draft, constraints.scale);
+  const parsedDraft = parseNormalizedDraftToScaledUnits(
+    draft,
+    constraints.scale,
+  );
 
   if (parsedDraft === null) {
     return constraints.min;

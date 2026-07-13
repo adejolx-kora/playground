@@ -3,22 +3,18 @@ import { InputGroup, InputGroupInput } from "@korapay/react/molecules";
 import { CaretDownIcon, CaretUpIcon } from "@phosphor-icons/react";
 import * as React from "react";
 
+import { usePointerRepeat } from "@/hooks/use-pointer-repeat";
 import { cn } from "@/lib/utils";
-import {
-  NumericInputUiContext,
-  NumericInputValueContext,
-} from "./numeric-input-context.tsx";
+
 import type {
   NumericInputValidity,
   NumericInputRootProps,
 } from "./numeric-input.types.ts";
+
 import {
-  getCanStepWithConstraints,
-} from "./numeric-input.math.ts";
-import {
-  parseLocalizedDraftToNormalized,
-  formatNormalizedToLocalizedDisplay,
-} from "./numeric-input.locale.ts";
+  NumericInputUiContext,
+  NumericInputValueContext,
+} from "./numeric-input-context.tsx";
 import {
   useNumericInputContext,
   useNumericInputFieldState,
@@ -26,7 +22,11 @@ import {
   useNumericInputUiContext,
   useNumericInputValueContext,
 } from "./numeric-input-hooks.tsx";
-import { usePointerRepeat } from "@/hooks/use-pointer-repeat";
+import {
+  parseLocalizedDraftToNormalized,
+  formatNormalizedToLocalizedDisplay,
+} from "./numeric-input.locale.ts";
+import { getCanStepWithConstraints } from "./numeric-input.math.ts";
 
 /** Validates root-level numeric constraints before any state is created. */
 function assertNumericInputProps({
@@ -77,19 +77,17 @@ export function NumericInputRoot({
 }: NumericInputRootProps) {
   assertNumericInputProps({ min, max, step });
 
-  const { uiContextValue, valueContextValue } = useNumericInputRootState(
-    {
-      value,
-      defaultValue,
-      onValueChange,
-      locale,
-      dir,
-      min,
-      max,
-      step,
-      disabled,
-    },
-  );
+  const { uiContextValue, valueContextValue } = useNumericInputRootState({
+    value,
+    defaultValue,
+    onValueChange,
+    locale,
+    dir,
+    min,
+    max,
+    step,
+    disabled,
+  });
 
   return (
     <NumericInputUiContext.Provider value={uiContextValue}>
@@ -154,20 +152,16 @@ export const NumericInputField = React.forwardRef<
     [forwardedRef],
   );
 
-  const {
-    localeParts,
-    validationScale,
-    validity,
-    ariaValueNow,
-  } = useNumericInputFieldState(
-    value,
-    locale,
-    min,
-    max,
-    step,
-    scale,
-    props.required === true,
-  );
+  const { localeParts, validationScale, validity, ariaValueNow } =
+    useNumericInputFieldState(
+      value,
+      locale,
+      min,
+      max,
+      step,
+      scale,
+      props.required === true,
+    );
 
   const [displayValue, setDisplayValue] = React.useState(() =>
     formatNormalizedToLocalizedDisplay(value, locale, validationScale),

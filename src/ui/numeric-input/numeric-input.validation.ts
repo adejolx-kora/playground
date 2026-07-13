@@ -1,11 +1,12 @@
 /** Validation helpers for the numeric input's normalized draft format. */
 
+import type { ScaledConstraintUnits } from "./numeric-input.types";
+import type { NumericInputValidity } from "./numeric-input.types";
+
 import {
   getScaledConstraintUnits,
   parseNormalizedDraftToScaledUnits,
 } from "./numeric-input.math";
-import type { ScaledConstraintUnits } from "./numeric-input.types";
-import type { NumericInputValidity } from "./numeric-input.types";
 
 /** Computes validity from a draft and precomputed scaled constraints. */
 export function getNumericValidityWithConstraints({
@@ -29,7 +30,10 @@ export function getNumericValidityWithConstraints({
     };
   }
 
-  const parsedUnits = parseNormalizedDraftToScaledUnits(value, constraints.scale);
+  const parsedUnits = parseNormalizedDraftToScaledUnits(
+    value,
+    constraints.scale,
+  );
   if (parsedUnits === null) {
     return {
       valueMissing: false,

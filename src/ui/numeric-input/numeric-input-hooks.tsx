@@ -1,9 +1,19 @@
 import * as React from "react";
 
+import type {
+  NumericInputUiContextValue,
+  NumericInputValueContextValue,
+} from "./numeric-input.types.ts";
+
 import {
   NumericInputUiContext,
   NumericInputValueContext,
 } from "./numeric-input-context.tsx";
+import {
+  getNumberLocaleParts,
+  getResolvedDirection,
+  getResolvedLocale,
+} from "./numeric-input.locale.ts";
 import {
   getMaxFractionDigits,
   parseNormalizedDraftToScaledUnits,
@@ -11,15 +21,6 @@ import {
   sanitizeNumericDraft,
   stepNormalizedDraftWithConstraints,
 } from "./numeric-input.math.ts";
-import {
-  getNumberLocaleParts,
-  getResolvedDirection,
-  getResolvedLocale,
-} from "./numeric-input.locale.ts";
-import type {
-  NumericInputUiContextValue,
-  NumericInputValueContextValue,
-} from "./numeric-input.types.ts";
 import { getNumericValidityWithConstraints } from "./numeric-input.validation.ts";
 
 /** Stores the latest value without changing callback identities. */
@@ -116,10 +117,7 @@ export function useNumericInputRootState({
     [locale],
   );
 
-  const resolvedDir = React.useMemo(
-    () => getResolvedDirection(dir),
-    [dir],
-  );
+  const resolvedDir = React.useMemo(() => getResolvedDirection(dir), [dir]);
 
   const [internalValue, setInternalValue] = React.useState(() =>
     sanitizeNumericDraft(String(defaultValue)),
@@ -247,7 +245,10 @@ export function useNumericInputFieldState(
   );
 
   const ariaValueNow = React.useMemo(() => {
-    const parsedUnits = parseNormalizedDraftToScaledUnits(value, validationScale);
+    const parsedUnits = parseNormalizedDraftToScaledUnits(
+      value,
+      validationScale,
+    );
     if (parsedUnits === null) return undefined;
     const numericValue = Number(value);
     return Number.isFinite(numericValue) ? numericValue : undefined;

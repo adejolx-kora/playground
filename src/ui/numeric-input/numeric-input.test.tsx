@@ -17,19 +17,19 @@ describe("NumericInput", () => {
     );
 
     expect(
-      screen.getByRole("spinbutton", { name: "Quantity" }).getAttribute(
-        "aria-valuenow",
-      ),
+      screen
+        .getByRole("spinbutton", { name: "Quantity" })
+        .getAttribute("aria-valuenow"),
     ).toBe("42");
     expect(
-      screen.getByRole("button", { name: "Increase value" }).hasAttribute(
-        "disabled",
-      ),
+      screen
+        .getByRole("button", { name: "Increase value" })
+        .hasAttribute("disabled"),
     ).toBe(false);
     expect(
-      screen.getByRole("button", { name: "Decrease value" }).hasAttribute(
-        "disabled",
-      ),
+      screen
+        .getByRole("button", { name: "Decrease value" })
+        .hasAttribute("disabled"),
     ).toBe(false);
   });
 
@@ -126,7 +126,11 @@ describe("NumericInput", () => {
     const user = userEvent.setup();
 
     render(
-      <NumericInput.Root defaultValue="10" onValueChange={onValueChange} step={1}>
+      <NumericInput.Root
+        defaultValue="10"
+        onValueChange={onValueChange}
+        step={1}
+      >
         <NumericInput.Field aria-label="Seats" disabled />
         <NumericInput.Controls>
           <NumericInput.Increment />
@@ -160,12 +164,18 @@ describe("NumericInput", () => {
 
     expect((input as HTMLInputElement).disabled).toBe(true);
     expect(
-      (screen.getByRole("button", { name: "Increase value" }) as HTMLButtonElement)
-        .disabled,
+      (
+        screen.getByRole("button", {
+          name: "Increase value",
+        }) as HTMLButtonElement
+      ).disabled,
     ).toBe(true);
     expect(
-      (screen.getByRole("button", { name: "Decrease value" }) as HTMLButtonElement)
-        .disabled,
+      (
+        screen.getByRole("button", {
+          name: "Decrease value",
+        }) as HTMLButtonElement
+      ).disabled,
     ).toBe(true);
     expect(onValueChange).not.toHaveBeenCalled();
   });

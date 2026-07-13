@@ -1,7 +1,11 @@
 /** Locale-aware parsing and formatting helpers for numeric drafts. */
 
-import { isParseableNumericDraft, sanitizeNumericDraft } from "./numeric-input.math";
 import type { Direction, LocaleParts } from "./numeric-input.types";
+
+import {
+  isParseableNumericDraft,
+  sanitizeNumericDraft,
+} from "./numeric-input.math";
 
 const localePartsCache = new Map<string, LocaleParts>();
 const latinLocaleCache = new Map<string, string>();
@@ -121,13 +125,18 @@ export function getNumberLocaleParts(locale: string): LocaleParts {
   }
 
   const digits = new Map<string, string>();
-  const localeDigitFormatter = new Intl.NumberFormat(locale, { useGrouping: false });
+  const localeDigitFormatter = new Intl.NumberFormat(locale, {
+    useGrouping: false,
+  });
   const latinDigitFormatter = new Intl.NumberFormat(latinLocale, {
     useGrouping: false,
   });
 
   for (let digit = 0; digit <= 9; digit += 1) {
-    digits.set(localeDigitFormatter.format(digit), latinDigitFormatter.format(digit));
+    digits.set(
+      localeDigitFormatter.format(digit),
+      latinDigitFormatter.format(digit),
+    );
   }
 
   const localeParts = {
@@ -149,13 +158,8 @@ export function parseLocalizedDraftToNormalized(
   input: string,
   localeParts: LocaleParts,
 ): string {
-  const {
-    decimal,
-    digits,
-    decimalSeparators,
-    groupSeparators,
-    minusSigns,
-  } = localeParts;
+  const { decimal, digits, decimalSeparators, groupSeparators, minusSigns } =
+    localeParts;
   let normalized = input;
   for (const [localeDigit, asciiDigit] of digits) {
     if (localeDigit !== asciiDigit) {
@@ -204,8 +208,10 @@ function isUnsafeForNumberDisplay(value: string): boolean {
   const isNegative = value.startsWith("-");
   const unsigned = value.substring(isNegative ? 1 : 0);
   const dotIndex = unsigned.indexOf(".");
-  const integerPartStr = dotIndex === -1 ? unsigned : unsigned.substring(0, dotIndex);
-  const fractionalPartStr = dotIndex === -1 ? "" : unsigned.substring(dotIndex + 1);
+  const integerPartStr =
+    dotIndex === -1 ? unsigned : unsigned.substring(0, dotIndex);
+  const fractionalPartStr =
+    dotIndex === -1 ? "" : unsigned.substring(dotIndex + 1);
 
   if (!integerPartStr) {
     return false;
