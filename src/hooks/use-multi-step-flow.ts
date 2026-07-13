@@ -66,7 +66,11 @@ export function useMultiStepFlow<TStepId extends StepId = StepId>(
         stepIndex < navigation.currentStepIndexRef.current
       );
     },
-    [navigation.currentStepIndexRef, navigation.stepIndexById, navigation.visitedStepIdsSetRef],
+    [
+      navigation.currentStepIndexRef,
+      navigation.stepIndexById,
+      navigation.visitedStepIdsSetRef,
+    ],
   );
 
   const getStepStatus = useCallback(
@@ -81,7 +85,9 @@ export function useMultiStepFlow<TStepId extends StepId = StepId>(
         return "current" as const;
       }
 
-      return isStepComplete(stepId) ? ("complete" as const) : ("pending" as const);
+      return isStepComplete(stepId)
+        ? ("complete" as const)
+        : ("pending" as const);
     },
     [isStepComplete, navigation.currentStepIndexRef, navigation.stepIndexById],
   );

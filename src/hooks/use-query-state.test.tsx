@@ -12,11 +12,7 @@ import { useQueryStates } from "./use-query-states";
 
 describe("query state hooks", () => {
   it("supports repeated query params through array parsers", async () => {
-    window.history.replaceState(
-      null,
-      "",
-      "/?tag=alpha&tag=beta&tag=gamma",
-    );
+    window.history.replaceState(null, "", "/?tag=alpha&tag=beta&tag=gamma");
 
     const { result } = renderHook(() =>
       useQueryState("tag", parseAsArrayOf(parseAsString)),

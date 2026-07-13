@@ -5,11 +5,7 @@ import { useMultiStepFlow } from "./use-multi-step-flow";
 
 type TestStepId = "details" | "review" | "done";
 
-const steps = [
-  { id: "details" },
-  { id: "review" },
-  { id: "done" },
-] as const;
+const steps = [{ id: "details" }, { id: "review" }, { id: "done" }] as const;
 
 describe("useMultiStepFlow", () => {
   it("throws on duplicate step ids", () => {

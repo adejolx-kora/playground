@@ -68,7 +68,8 @@ export function useMultiStepForm<
     (field: string, errors?: ValidationErrors) =>
       errors
         ? getByPath(errors, field)
-        : (adapter.getFieldError?.(field) ?? getByPath(adapter.getErrors?.(), field)),
+        : (adapter.getFieldError?.(field) ??
+          getByPath(adapter.getErrors?.(), field)),
     [adapter],
   );
 
@@ -164,14 +165,16 @@ export function useMultiStepForm<
       return normalizeValidationResult(adapter, await adapter.validateForm());
     }
 
-    return validateFieldsOnce(getUniqueFields(steps, steps.map((_, index) => index)));
+    return validateFieldsOnce(
+      getUniqueFields(
+        steps,
+        steps.map((_, index) => index),
+      ),
+    );
   }, [adapter, steps, validateFieldsOnce]);
 
   const stepHasAdapterErrors = useCallback(
-    (
-      step: MultiStepFormStep<TValues, TStepId>,
-      errors?: ValidationErrors,
-    ) =>
+    (step: MultiStepFormStep<TValues, TStepId>, errors?: ValidationErrors) =>
       (step.fields ?? EMPTY_FIELDS).some((field) =>
         hasFieldError(readFieldError(field, errors)),
       ),
@@ -179,10 +182,7 @@ export function useMultiStepForm<
   );
 
   const handleInvalidStep = useCallback(
-    async (
-      stepIndex: number,
-      errors?: ValidationErrors,
-    ) => {
+    async (stepIndex: number, errors?: ValidationErrors) => {
       if (stepIndex !== navigation.currentStepIndexRef.current) {
         navigation.moveToIndex(stepIndex);
       }
@@ -194,17 +194,19 @@ export function useMultiStepForm<
   );
 
   const validateSingleStep = useCallback(
-    async (
-      stepIndex: number,
-      direction: MultiStepValidationDirection,
-    ) => {
+    async (stepIndex: number, direction: MultiStepValidationDirection) => {
       const step = steps[stepIndex];
 
       await touchStepFields([stepIndex]);
 
-      const adapterResult = await validateFieldsOnce(step.fields ?? EMPTY_FIELDS);
+      const adapterResult = await validateFieldsOnce(
+        step.fields ?? EMPTY_FIELDS,
+      );
 
-      if (!adapterResult.valid || stepHasAdapterErrors(step, adapterResult.errors)) {
+      if (
+        !adapterResult.valid ||
+        stepHasAdapterErrors(step, adapterResult.errors)
+      ) {
         await focusStepField(step, adapterResult.errors);
         return false;
       }
@@ -234,7 +236,11 @@ export function useMultiStepForm<
           return handleInvalidStep(stepIndex, validationResult.errors);
         }
 
-        const customValid = await runCustomStepValidation(step, stepIndex, direction);
+        const customValid = await runCustomStepValidation(
+          step,
+          stepIndex,
+          direction,
+        );
 
         if (!customValid) {
           return handleInvalidStep(stepIndex, validationResult.errors);
@@ -249,9 +255,14 @@ export function useMultiStepForm<
             continue;
           }
 
-          const stepResult = await validateFieldsOnce(step.fields ?? EMPTY_FIELDS);
+          const stepResult = await validateFieldsOnce(
+            step.fields ?? EMPTY_FIELDS,
+          );
 
-          if (!stepResult.valid || stepHasAdapterErrors(step, stepResult.errors)) {
+          if (
+            !stepResult.valid ||
+            stepHasAdapterErrors(step, stepResult.errors)
+          ) {
             return handleInvalidStep(stepIndex, stepResult.errors);
           }
         }
@@ -405,7 +416,9 @@ export function useMultiStepForm<
         (fields.length === 0 ||
           fields.every((field) => {
             const fieldValue = getByPath(values, field);
-            return hasValue(fieldValue) && !hasFieldError(readFieldError(field));
+            return (
+              hasValue(fieldValue) && !hasFieldError(readFieldError(field))
+            );
           }));
       const complete = isStepComplete
         ? isStepComplete({

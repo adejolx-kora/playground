@@ -1,4 +1,10 @@
-import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -7,7 +13,10 @@ import {
   type MultiStepFormAdapter,
 } from "@/lib/multistep-form";
 
-import { useMultiStepForm, useMultiStepFormSelector } from "./use-multi-step-form";
+import {
+  useMultiStepForm,
+  useMultiStepFormSelector,
+} from "./use-multi-step-form";
 
 type TestValues = {
   name: string;
@@ -34,7 +43,8 @@ function createAdapter(
   overrides: Partial<MultiStepFormAdapter<TestValues>> = {},
 ): MultiStepFormAdapter<TestValues> {
   return {
-    getValues: overrides.getValues ?? (() => ({ name: "Acme", email: "ada@acme.com" })),
+    getValues:
+      overrides.getValues ?? (() => ({ name: "Acme", email: "ada@acme.com" })),
     getErrors: overrides.getErrors,
     getFieldError: overrides.getFieldError,
     subscribe: overrides.subscribe,

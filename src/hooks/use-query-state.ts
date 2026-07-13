@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from "react";
 
+import type { QueryParser, QueryStateOptions } from "@/lib/query-state";
+
 import {
   defaultQueryStateOptions,
   parseAsString,
@@ -9,7 +11,6 @@ import {
   useQueryStateNavigate,
   writeQueryValue,
 } from "@/lib/query-state";
-import type { QueryParser, QueryStateOptions } from "@/lib/query-state";
 
 type QuerySetterOptions = QueryStateOptions;
 

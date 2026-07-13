@@ -1,5 +1,11 @@
 import { useCallback, useMemo } from "react";
 
+import type {
+  InferSchemaValues,
+  QuerySchema,
+  QueryStateOptions,
+} from "@/lib/query-state";
+
 import {
   applyQueryValues,
   defaultQueryStateOptions,
@@ -7,11 +13,6 @@ import {
   toSearchString,
   useQueryStateLocation,
   useQueryStateNavigate,
-} from "@/lib/query-state";
-import type {
-  InferSchemaValues,
-  QuerySchema,
-  QueryStateOptions,
 } from "@/lib/query-state";
 
 type QuerySetterOptions = QueryStateOptions;
