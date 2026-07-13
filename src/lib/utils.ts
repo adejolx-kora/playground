@@ -113,3 +113,22 @@ export function getCursorFromRightDigitRank(value: string, rightRank: number) {
 
   return 0;
 }
+
+type NumberFormatInput = number | bigint | null | undefined;
+
+export function formatNumber(
+  value: NumberFormatInput,
+  options: Intl.NumberFormatOptions = {},
+  locale: string | string[] = "en-US",
+  fallback = "",
+): string {
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return new Intl.NumberFormat(locale, options).format(value);
+}
