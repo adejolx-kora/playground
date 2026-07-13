@@ -9,36 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ViewsIndexRouteImport } from './routes/views.index'
-import { Route as ViewsWizardModalRouteImport } from './routes/views.wizard-modal'
-import { Route as ViewsOnboardingRouteImport } from './routes/views.onboarding'
-import { Route as ViewsLoginRouteImport } from './routes/views.login'
+import { Route as UiCheckoutRouteImport } from './routes/ui.checkout'
+import { Route as SurfaceModalRouteImport } from './routes/surface.modal'
 import { Route as InteractionsViewTransitionsRouteImport } from './routes/interactions.view-transitions'
 import { Route as InteractionsInputRouteImport } from './routes/interactions.input'
 import { Route as InteractionsHoverRouteImport } from './routes/interactions.hover'
-import { Route as ViewsOnboardingIndexRouteImport } from './routes/views.onboarding.index'
-import { Route as ViewsOnboardingVanillaRouteImport } from './routes/views.onboarding.vanilla'
-import { Route as ViewsOnboardingReactHookFormRouteImport } from './routes/views.onboarding.react-hook-form'
-import { Route as ViewsOnboardingFormikRouteImport } from './routes/views.onboarding.formik'
 
-const ViewsIndexRoute = ViewsIndexRouteImport.update({
-  id: '/views/',
-  path: '/views/',
+const UiCheckoutRoute = UiCheckoutRouteImport.update({
+  id: '/ui/checkout',
+  path: '/ui/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ViewsWizardModalRoute = ViewsWizardModalRouteImport.update({
-  id: '/views/wizard-modal',
-  path: '/views/wizard-modal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ViewsOnboardingRoute = ViewsOnboardingRouteImport.update({
-  id: '/views/onboarding',
-  path: '/views/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ViewsLoginRoute = ViewsLoginRouteImport.update({
-  id: '/views/login',
-  path: '/views/login',
+const SurfaceModalRoute = SurfaceModalRouteImport.update({
+  id: '/surface/modal',
+  path: '/surface/modal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InteractionsViewTransitionsRoute =
@@ -57,66 +41,28 @@ const InteractionsHoverRoute = InteractionsHoverRouteImport.update({
   path: '/interactions/hover',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ViewsOnboardingIndexRoute = ViewsOnboardingIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ViewsOnboardingRoute,
-} as any)
-const ViewsOnboardingVanillaRoute = ViewsOnboardingVanillaRouteImport.update({
-  id: '/vanilla',
-  path: '/vanilla',
-  getParentRoute: () => ViewsOnboardingRoute,
-} as any)
-const ViewsOnboardingReactHookFormRoute =
-  ViewsOnboardingReactHookFormRouteImport.update({
-    id: '/react-hook-form',
-    path: '/react-hook-form',
-    getParentRoute: () => ViewsOnboardingRoute,
-  } as any)
-const ViewsOnboardingFormikRoute = ViewsOnboardingFormikRouteImport.update({
-  id: '/formik',
-  path: '/formik',
-  getParentRoute: () => ViewsOnboardingRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/interactions/hover': typeof InteractionsHoverRoute
   '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
-  '/views/login': typeof ViewsLoginRoute
-  '/views/onboarding': typeof ViewsOnboardingRouteWithChildren
-  '/views/wizard-modal': typeof ViewsWizardModalRoute
-  '/views/': typeof ViewsIndexRoute
-  '/views/onboarding/formik': typeof ViewsOnboardingFormikRoute
-  '/views/onboarding/react-hook-form': typeof ViewsOnboardingReactHookFormRoute
-  '/views/onboarding/vanilla': typeof ViewsOnboardingVanillaRoute
-  '/views/onboarding/': typeof ViewsOnboardingIndexRoute
+  '/surface/modal': typeof SurfaceModalRoute
+  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRoutesByTo {
   '/interactions/hover': typeof InteractionsHoverRoute
   '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
-  '/views/login': typeof ViewsLoginRoute
-  '/views/wizard-modal': typeof ViewsWizardModalRoute
-  '/views': typeof ViewsIndexRoute
-  '/views/onboarding/formik': typeof ViewsOnboardingFormikRoute
-  '/views/onboarding/react-hook-form': typeof ViewsOnboardingReactHookFormRoute
-  '/views/onboarding/vanilla': typeof ViewsOnboardingVanillaRoute
-  '/views/onboarding': typeof ViewsOnboardingIndexRoute
+  '/surface/modal': typeof SurfaceModalRoute
+  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/interactions/hover': typeof InteractionsHoverRoute
   '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
-  '/views/login': typeof ViewsLoginRoute
-  '/views/onboarding': typeof ViewsOnboardingRouteWithChildren
-  '/views/wizard-modal': typeof ViewsWizardModalRoute
-  '/views/': typeof ViewsIndexRoute
-  '/views/onboarding/formik': typeof ViewsOnboardingFormikRoute
-  '/views/onboarding/react-hook-form': typeof ViewsOnboardingReactHookFormRoute
-  '/views/onboarding/vanilla': typeof ViewsOnboardingVanillaRoute
-  '/views/onboarding/': typeof ViewsOnboardingIndexRoute
+  '/surface/modal': typeof SurfaceModalRoute
+  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -124,79 +70,46 @@ export interface FileRouteTypes {
     | '/interactions/hover'
     | '/interactions/input'
     | '/interactions/view-transitions'
-    | '/views/login'
-    | '/views/onboarding'
-    | '/views/wizard-modal'
-    | '/views/'
-    | '/views/onboarding/formik'
-    | '/views/onboarding/react-hook-form'
-    | '/views/onboarding/vanilla'
-    | '/views/onboarding/'
+    | '/surface/modal'
+    | '/ui/checkout'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/interactions/hover'
     | '/interactions/input'
     | '/interactions/view-transitions'
-    | '/views/login'
-    | '/views/wizard-modal'
-    | '/views'
-    | '/views/onboarding/formik'
-    | '/views/onboarding/react-hook-form'
-    | '/views/onboarding/vanilla'
-    | '/views/onboarding'
+    | '/surface/modal'
+    | '/ui/checkout'
   id:
     | '__root__'
     | '/interactions/hover'
     | '/interactions/input'
     | '/interactions/view-transitions'
-    | '/views/login'
-    | '/views/onboarding'
-    | '/views/wizard-modal'
-    | '/views/'
-    | '/views/onboarding/formik'
-    | '/views/onboarding/react-hook-form'
-    | '/views/onboarding/vanilla'
-    | '/views/onboarding/'
+    | '/surface/modal'
+    | '/ui/checkout'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   InteractionsHoverRoute: typeof InteractionsHoverRoute
   InteractionsInputRoute: typeof InteractionsInputRoute
   InteractionsViewTransitionsRoute: typeof InteractionsViewTransitionsRoute
-  ViewsLoginRoute: typeof ViewsLoginRoute
-  ViewsOnboardingRoute: typeof ViewsOnboardingRouteWithChildren
-  ViewsWizardModalRoute: typeof ViewsWizardModalRoute
-  ViewsIndexRoute: typeof ViewsIndexRoute
+  SurfaceModalRoute: typeof SurfaceModalRoute
+  UiCheckoutRoute: typeof UiCheckoutRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/views/': {
-      id: '/views/'
-      path: '/views'
-      fullPath: '/views/'
-      preLoaderRoute: typeof ViewsIndexRouteImport
+    '/ui/checkout': {
+      id: '/ui/checkout'
+      path: '/ui/checkout'
+      fullPath: '/ui/checkout'
+      preLoaderRoute: typeof UiCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/views/wizard-modal': {
-      id: '/views/wizard-modal'
-      path: '/views/wizard-modal'
-      fullPath: '/views/wizard-modal'
-      preLoaderRoute: typeof ViewsWizardModalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/views/onboarding': {
-      id: '/views/onboarding'
-      path: '/views/onboarding'
-      fullPath: '/views/onboarding'
-      preLoaderRoute: typeof ViewsOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/views/login': {
-      id: '/views/login'
-      path: '/views/login'
-      fullPath: '/views/login'
-      preLoaderRoute: typeof ViewsLoginRouteImport
+    '/surface/modal': {
+      id: '/surface/modal'
+      path: '/surface/modal'
+      fullPath: '/surface/modal'
+      preLoaderRoute: typeof SurfaceModalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interactions/view-transitions': {
@@ -220,63 +133,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InteractionsHoverRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/views/onboarding/': {
-      id: '/views/onboarding/'
-      path: '/'
-      fullPath: '/views/onboarding/'
-      preLoaderRoute: typeof ViewsOnboardingIndexRouteImport
-      parentRoute: typeof ViewsOnboardingRoute
-    }
-    '/views/onboarding/vanilla': {
-      id: '/views/onboarding/vanilla'
-      path: '/vanilla'
-      fullPath: '/views/onboarding/vanilla'
-      preLoaderRoute: typeof ViewsOnboardingVanillaRouteImport
-      parentRoute: typeof ViewsOnboardingRoute
-    }
-    '/views/onboarding/react-hook-form': {
-      id: '/views/onboarding/react-hook-form'
-      path: '/react-hook-form'
-      fullPath: '/views/onboarding/react-hook-form'
-      preLoaderRoute: typeof ViewsOnboardingReactHookFormRouteImport
-      parentRoute: typeof ViewsOnboardingRoute
-    }
-    '/views/onboarding/formik': {
-      id: '/views/onboarding/formik'
-      path: '/formik'
-      fullPath: '/views/onboarding/formik'
-      preLoaderRoute: typeof ViewsOnboardingFormikRouteImport
-      parentRoute: typeof ViewsOnboardingRoute
-    }
   }
 }
-
-interface ViewsOnboardingRouteChildren {
-  ViewsOnboardingFormikRoute: typeof ViewsOnboardingFormikRoute
-  ViewsOnboardingReactHookFormRoute: typeof ViewsOnboardingReactHookFormRoute
-  ViewsOnboardingVanillaRoute: typeof ViewsOnboardingVanillaRoute
-  ViewsOnboardingIndexRoute: typeof ViewsOnboardingIndexRoute
-}
-
-const ViewsOnboardingRouteChildren: ViewsOnboardingRouteChildren = {
-  ViewsOnboardingFormikRoute: ViewsOnboardingFormikRoute,
-  ViewsOnboardingReactHookFormRoute: ViewsOnboardingReactHookFormRoute,
-  ViewsOnboardingVanillaRoute: ViewsOnboardingVanillaRoute,
-  ViewsOnboardingIndexRoute: ViewsOnboardingIndexRoute,
-}
-
-const ViewsOnboardingRouteWithChildren = ViewsOnboardingRoute._addFileChildren(
-  ViewsOnboardingRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   InteractionsHoverRoute: InteractionsHoverRoute,
   InteractionsInputRoute: InteractionsInputRoute,
   InteractionsViewTransitionsRoute: InteractionsViewTransitionsRoute,
-  ViewsLoginRoute: ViewsLoginRoute,
-  ViewsOnboardingRoute: ViewsOnboardingRouteWithChildren,
-  ViewsWizardModalRoute: ViewsWizardModalRoute,
-  ViewsIndexRoute: ViewsIndexRoute,
+  SurfaceModalRoute: SurfaceModalRoute,
+  UiCheckoutRoute: UiCheckoutRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,12 @@
 import {
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@korapay/react";
+import {
   SidebarProvider,
   SidebarMenuButton,
   SidebarContent,
@@ -14,14 +22,6 @@ import {
   SidebarRail,
   SidebarInset,
 } from "@korapay/react/sidebar";
-import {
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@korapay/react";
 import {
   createRootRoute,
   Link,
@@ -66,23 +66,12 @@ const sections: Array<MenuSection> = [
     ],
   },
   {
-    label: "Views",
-    items: [
-      { label: "Login", url: "/views/login" },
-      {
-        label: "Onboarding",
-        url: "/views/onboarding",
-        items: [
-          { label: "Vanilla Utility", url: "/views/onboarding/vanilla" },
-          {
-            label: "React Hook Form",
-            url: "/views/onboarding/react-hook-form",
-          },
-          { label: "Formik", url: "/views/onboarding/formik" },
-        ],
-      },
-      { label: "Wizard modal", url: "/views/wizard-modal" },
-    ],
+    label: "Surface",
+    items: [{ label: "Modal", url: "/surface/modal" }],
+  },
+  {
+    label: "UI",
+    items: [{ label: "Checkout", url: "/ui/checkout" }],
   },
 ];
 
@@ -96,11 +85,7 @@ function RootComponent() {
   );
 }
 
-function RootQueryStateProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function RootQueryStateProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const location = useRouterState({
     select: (state) => state.location,
@@ -194,39 +179,35 @@ function RootLayout() {
                   {section.label}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>
-                    <SidebarMenu>
-                      {section.items.map((item) => (
-                        <SidebarMenuItem key={item.label}>
-                          <SidebarMenuButton
-                            isActive={
-                              item.url ? pathname.startsWith(item.url) : false
-                            }
-                            render={
-                              <Link
-                                to={item.url || "#"}
-                              />
-                            }
-                            tooltip={item.label}
-                          >
-                            <span>{item.label}</span>
-                          </SidebarMenuButton>
-                          {item.items?.length ? (
-                            <SidebarMenuSub>
-                              {item.items.map((subItem) => (
-                                <SidebarMenuSubItem key={subItem.label}>
-                                  <SidebarMenuSubButton
-                                    isActive={pathname === subItem.url}
-                                    render={<Link to={subItem.url || "#"} />}
-                                  >
-                                    <span>{subItem.label}</span>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
-                            </SidebarMenuSub>
-                          ) : null}
-                        </SidebarMenuItem>
-                      ))}
-                    </SidebarMenu>
+                  <SidebarMenu>
+                    {section.items.map((item) => (
+                      <SidebarMenuItem key={item.label}>
+                        <SidebarMenuButton
+                          isActive={
+                            item.url ? pathname.startsWith(item.url) : false
+                          }
+                          render={<Link to={item.url || "#"} />}
+                          tooltip={item.label}
+                        >
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                        {item.items?.length ? (
+                          <SidebarMenuSub>
+                            {item.items.map((subItem) => (
+                              <SidebarMenuSubItem key={subItem.label}>
+                                <SidebarMenuSubButton
+                                  isActive={pathname === subItem.url}
+                                  render={<Link to={subItem.url || "#"} />}
+                                >
+                                  <span>{subItem.label}</span>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        ) : null}
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
             ))}
