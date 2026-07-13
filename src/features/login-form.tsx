@@ -11,7 +11,7 @@ import {
 
 export function LoginForm() {
   return (
-    <Card className="ring-0 mx-auto w-full max-w-md">
+    <Card className="mx-auto w-full max-w-md ring-0">
       <CardContent>
         <form className="flex flex-col gap-6">
           <FieldGroup>

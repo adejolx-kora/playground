@@ -14,7 +14,6 @@ import { ArrowRightIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 
-import { NumericInput } from "@/ui/numeric-input";
 import {
   OTPInputGroup,
   OTPInputRoot,
@@ -29,6 +28,7 @@ import { useQueryState } from "@/hooks/use-query-state";
 import { useQueryStates } from "@/hooks/use-query-states";
 import { useLocale } from "@/lib/locale-context";
 import { parseAsString } from "@/lib/query-state";
+import { NumericInput } from "@/ui/numeric-input";
 
 export const Route = createFileRoute("/interactions/input")({
   component: RouteComponent,
@@ -167,7 +167,7 @@ function InputCard({
   footer,
 }: InputCardProps) {
   return (
-    <article className="row-span-3 grid grid-rows-subgrid gap-2 border border-stroke-default-secondary bg-surface-primary p-4 lg:not-nth-[3n+1]:border-l-0 sm:nth-[2n]:border-l-0 lg:nth-[3n+1]:border-l">
+    <article className="row-span-3 grid grid-rows-subgrid gap-2 border border-stroke-default-secondary bg-surface-primary p-4 sm:nth-[2n]:border-l-0 lg:not-nth-[3n+1]:border-l-0 lg:nth-[3n+1]:border-l">
       <div className="space-y-1">
         <Label
           htmlFor={id}

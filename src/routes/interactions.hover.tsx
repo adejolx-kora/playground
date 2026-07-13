@@ -6,5 +6,5 @@ export const Route = createFileRoute("/interactions/hover")({
 
 // eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
-  return <div className="px-6 py-4 space-y-4">Hello from the hover page</div>;
+  return <div className="space-y-4 px-6 py-4">Hello from the hover page</div>;
 }

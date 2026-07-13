@@ -271,7 +271,7 @@ function OTPInputSlot({
       autoComplete={index === 0 ? "one-time-code" : "off"}
       disabled={disabled || props.disabled}
       className={cn(
-        "aspect-square min-w-0 flex-1 max-w-12 px-0 text-center text-label-md tabular-nums",
+        "aspect-square max-w-12 min-w-0 flex-1 px-0 text-center text-label-md tabular-nums",
         className,
       )}
     />
