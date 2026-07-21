@@ -1,3 +1,4 @@
+import { useRender } from "@base-ui/react/use-render";
 import { Button } from "@korapay/react";
 import { Progress } from "@korapay/react/atoms";
 import {
@@ -37,6 +38,8 @@ interface MultiStepRootProps<
   extends
     UseMultiStepOptions<TStepId, TValues, TMeta>,
     Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Replaces the default root element while preserving its behavior and props. */
+  render?: useRender.RenderProp;
   children?:
     | ReactNode
     | ((context: MultiStepContextValue<TStepId, TMeta>) => ReactNode);
@@ -64,6 +67,7 @@ function MultiStepRootImplementation<
     initialStepId,
     adapter,
     validateOn,
+    render,
     children,
     "aria-busy": ariaBusy,
     ...rootProps
@@ -124,22 +128,26 @@ function MultiStepRootImplementation<
     }),
     [flow, getPanelId, getStepIndex, getStepState, getTriggerId, steps],
   );
+  const root = useRender({
+    defaultTagName: "div",
+    render,
+    ref: forwardedRef,
+    props: {
+      ...rootProps,
+      children: typeof children === "function" ? children(context) : children,
+      "aria-busy": ariaBusy ?? flow.isTransitioning,
+      "data-current-step": String(flow.currentStepId),
+      "data-direction": flow.direction,
+      "data-state": flow.isTransitioning ? "transitioning" : "idle",
+      "data-multi-step-root": "",
+    },
+  });
 
   return (
     <MultiStepContext.Provider
       value={context as unknown as InternalMultiStepContextValue}
     >
-      <div
-        {...rootProps}
-        ref={forwardedRef}
-        aria-busy={ariaBusy ?? flow.isTransitioning}
-        data-current-step={String(flow.currentStepId)}
-        data-direction={flow.direction}
-        data-state={flow.isTransitioning ? "transitioning" : "idle"}
-        data-multi-step-root=""
-      >
-        {typeof children === "function" ? children(context) : children}
-      </div>
+      {root}
     </MultiStepContext.Provider>
   );
 }
