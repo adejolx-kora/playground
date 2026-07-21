@@ -56,6 +56,7 @@ const sections: Array<MenuSection> = [
     items: [
       { label: "Checkout", url: "/flows/checkout" },
       { label: "Onboarding", url: "/flows/onboarding" },
+      { label: "Escalate chargeback", url: "/flow/escalate-chargeback" },
     ],
   },
 ];

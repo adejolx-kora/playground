@@ -15,6 +15,7 @@ import { Route as InteractionsViewTransitionsRouteImport } from './routes/intera
 import { Route as InteractionsHoverRouteImport } from './routes/interactions.hover'
 import { Route as FlowsOnboardingRouteImport } from './routes/flows.onboarding'
 import { Route as FlowsCheckoutRouteImport } from './routes/flows.checkout'
+import { Route as FlowEscalateChargebackRouteImport } from './routes/flow.escalate-chargeback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,9 +48,15 @@ const FlowsCheckoutRoute = FlowsCheckoutRouteImport.update({
   path: '/flows/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlowEscalateChargebackRoute = FlowEscalateChargebackRouteImport.update({
+  id: '/flow/escalate-chargeback',
+  path: '/flow/escalate-chargeback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/flow/escalate-chargeback': typeof FlowEscalateChargebackRoute
   '/flows/checkout': typeof FlowsCheckoutRoute
   '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/flow/escalate-chargeback': typeof FlowEscalateChargebackRoute
   '/flows/checkout': typeof FlowsCheckoutRoute
   '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
@@ -67,6 +75,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/flow/escalate-chargeback': typeof FlowEscalateChargebackRoute
   '/flows/checkout': typeof FlowsCheckoutRoute
   '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/flow/escalate-chargeback'
     | '/flows/checkout'
     | '/flows/onboarding'
     | '/interactions/hover'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/flow/escalate-chargeback'
     | '/flows/checkout'
     | '/flows/onboarding'
     | '/interactions/hover'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/flow/escalate-chargeback'
     | '/flows/checkout'
     | '/flows/onboarding'
     | '/interactions/hover'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FlowEscalateChargebackRoute: typeof FlowEscalateChargebackRoute
   FlowsCheckoutRoute: typeof FlowsCheckoutRoute
   FlowsOnboardingRoute: typeof FlowsOnboardingRoute
   InteractionsHoverRoute: typeof InteractionsHoverRoute
@@ -153,11 +166,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowsCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flow/escalate-chargeback': {
+      id: '/flow/escalate-chargeback'
+      path: '/flow/escalate-chargeback'
+      fullPath: '/flow/escalate-chargeback'
+      preLoaderRoute: typeof FlowEscalateChargebackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FlowEscalateChargebackRoute: FlowEscalateChargebackRoute,
   FlowsCheckoutRoute: FlowsCheckoutRoute,
   FlowsOnboardingRoute: FlowsOnboardingRoute,
   InteractionsHoverRoute: InteractionsHoverRoute,
