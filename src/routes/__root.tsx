@@ -1,12 +1,4 @@
 import {
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@korapay/react";
-import {
   SidebarProvider,
   SidebarMenuButton,
   SidebarContent,
@@ -26,18 +18,8 @@ import {
   createRootRoute,
   Link,
   Outlet,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { useCallback, useMemo } from "react";
-
-import {
-  APP_LOCALE_LABELS,
-  AppLocaleProvider,
-  isAppLocale,
-  useLocale,
-} from "@/lib/locale-context";
-import { QueryStateProvider, toQueryLocationHref } from "@/lib/query-state";
 
 /* eslint-disable react-refresh/only-export-components */
 
@@ -57,125 +39,45 @@ type MenuSection = {
 };
 
 const sections: Array<MenuSection> = [
+  // {
+  //   label: "Interactions",
+  //   items: [
+  //     { label: "Hover", url: "/interactions/hover" },
+  //     { label: "View transitions", url: "/interactions/view-transitions" },
+  //     { label: "Input", url: "/interactions/input" },
+  //   ],
+  // },
+  // {
+  //   label: "Surface",
+  //   items: [{ label: "Modal", url: "/surface/modal" }],
+  // },
   {
-    label: "Interactions",
+    label: "Flows",
     items: [
-      { label: "Hover", url: "/interactions/hover" },
-      { label: "View transitions", url: "/interactions/view-transitions" },
-      { label: "Input", url: "/interactions/input" },
+      { label: "Checkout", url: "/flows/checkout" },
+      { label: "Onboarding", url: "/flows/onboarding" },
     ],
-  },
-  {
-    label: "Surface",
-    items: [{ label: "Modal", url: "/surface/modal" }],
-  },
-  {
-    label: "UI",
-    items: [{ label: "Checkout", url: "/ui/checkout" }],
   },
 ];
 
 function RootComponent() {
-  return (
-    <AppLocaleProvider>
-      <RootQueryStateProvider>
-        <RootLayout />
-      </RootQueryStateProvider>
-    </AppLocaleProvider>
-  );
-}
-
-function RootQueryStateProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const location = useRouterState({
-    select: (state) => state.location,
-  });
-
-  const queryStateLocation = useMemo(
-    () => ({
-      pathname: location.pathname,
-      searchStr: location.searchStr,
-      hash: location.hash,
-    }),
-    [location.hash, location.pathname, location.searchStr],
-  );
-
-  const navigate = useCallback(
-    (
-      nextLocation: {
-        pathname: string;
-        searchStr: string;
-        hash: string;
-      },
-      options: {
-        history: "replace" | "push";
-        clearOnDefault: boolean;
-      },
-    ) => {
-      return router.navigate({
-        href: toQueryLocationHref(nextLocation),
-        replace: options.history === "replace",
-      });
-    },
-    [router],
-  );
-
-  return (
-    <QueryStateProvider location={queryStateLocation} navigate={navigate}>
-      {children}
-    </QueryStateProvider>
-  );
-}
-
-function LocaleSelectControl() {
-  const { locale, setLocale, supportedLocales } = useLocale();
-
-  return (
-    <div className="space-y-2 px-2 pb-2">
-      <Label className="text-label-xs text-content-default-secondary">
-        Locale
-      </Label>
-      <Select
-        value={locale}
-        onValueChange={(nextLocale: string | null) => {
-          if (isAppLocale(nextLocale)) {
-            setLocale(nextLocale);
-          }
-        }}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select locale" />
-        </SelectTrigger>
-        <SelectContent>
-          {supportedLocales.map((supportedLocale) => (
-            <SelectItem key={supportedLocale} value={supportedLocale}>
-              {APP_LOCALE_LABELS[supportedLocale]}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
+  return <RootLayout />;
 }
 
 function RootLayout() {
-  const { locale } = useLocale();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
-  const isRtl = locale === "ar";
-  const sidebarSide = isRtl ? "right" : "left";
-  const dir = isRtl ? "rtl" : "ltr";
 
   return (
-    <div className="h-svh w-full bg-surface-primary">
+    <div className="kora:h-svh kora:w-full kora:bg-surface-primary">
       <SidebarProvider defaultOpen>
-        <Sidebar side={sidebarSide} variant="inset" dir={dir}>
-          <SidebarContent className="mt-5">
-            <LocaleSelectControl />
+        <Sidebar variant="inset">
+          <SidebarContent className="kora:mt-5">
+            {/* <LocaleSelectControl /> */}
             {sections.map((section) => (
               <SidebarGroup key={section.label}>
-                <SidebarGroupLabel className="text-subheading-2xs uppercase">
+                <SidebarGroupLabel className="kora:text-subheading-2xs kora:uppercase">
                   {section.label}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>

@@ -9,15 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UiCheckoutRouteImport } from './routes/ui.checkout'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as SurfaceModalRouteImport } from './routes/surface.modal'
 import { Route as InteractionsViewTransitionsRouteImport } from './routes/interactions.view-transitions'
-import { Route as InteractionsInputRouteImport } from './routes/interactions.input'
 import { Route as InteractionsHoverRouteImport } from './routes/interactions.hover'
+import { Route as FlowsOnboardingRouteImport } from './routes/flows.onboarding'
+import { Route as FlowsCheckoutRouteImport } from './routes/flows.checkout'
 
-const UiCheckoutRoute = UiCheckoutRouteImport.update({
-  id: '/ui/checkout',
-  path: '/ui/checkout',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SurfaceModalRoute = SurfaceModalRouteImport.update({
@@ -31,78 +32,90 @@ const InteractionsViewTransitionsRoute =
     path: '/interactions/view-transitions',
     getParentRoute: () => rootRouteImport,
   } as any)
-const InteractionsInputRoute = InteractionsInputRouteImport.update({
-  id: '/interactions/input',
-  path: '/interactions/input',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const InteractionsHoverRoute = InteractionsHoverRouteImport.update({
   id: '/interactions/hover',
   path: '/interactions/hover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlowsOnboardingRoute = FlowsOnboardingRouteImport.update({
+  id: '/flows/onboarding',
+  path: '/flows/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlowsCheckoutRoute = FlowsCheckoutRouteImport.update({
+  id: '/flows/checkout',
+  path: '/flows/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/flows/checkout': typeof FlowsCheckoutRoute
+  '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
-  '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/surface/modal': typeof SurfaceModalRoute
-  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/flows/checkout': typeof FlowsCheckoutRoute
+  '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
-  '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/surface/modal': typeof SurfaceModalRoute
-  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/flows/checkout': typeof FlowsCheckoutRoute
+  '/flows/onboarding': typeof FlowsOnboardingRoute
   '/interactions/hover': typeof InteractionsHoverRoute
-  '/interactions/input': typeof InteractionsInputRoute
   '/interactions/view-transitions': typeof InteractionsViewTransitionsRoute
   '/surface/modal': typeof SurfaceModalRoute
-  '/ui/checkout': typeof UiCheckoutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
+    | '/flows/checkout'
+    | '/flows/onboarding'
     | '/interactions/hover'
-    | '/interactions/input'
     | '/interactions/view-transitions'
     | '/surface/modal'
-    | '/ui/checkout'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
+    | '/flows/checkout'
+    | '/flows/onboarding'
     | '/interactions/hover'
-    | '/interactions/input'
     | '/interactions/view-transitions'
     | '/surface/modal'
-    | '/ui/checkout'
   id:
     | '__root__'
+    | '/'
+    | '/flows/checkout'
+    | '/flows/onboarding'
     | '/interactions/hover'
-    | '/interactions/input'
     | '/interactions/view-transitions'
     | '/surface/modal'
-    | '/ui/checkout'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  FlowsCheckoutRoute: typeof FlowsCheckoutRoute
+  FlowsOnboardingRoute: typeof FlowsOnboardingRoute
   InteractionsHoverRoute: typeof InteractionsHoverRoute
-  InteractionsInputRoute: typeof InteractionsInputRoute
   InteractionsViewTransitionsRoute: typeof InteractionsViewTransitionsRoute
   SurfaceModalRoute: typeof SurfaceModalRoute
-  UiCheckoutRoute: typeof UiCheckoutRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/ui/checkout': {
-      id: '/ui/checkout'
-      path: '/ui/checkout'
-      fullPath: '/ui/checkout'
-      preLoaderRoute: typeof UiCheckoutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/surface/modal': {
@@ -119,13 +132,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InteractionsViewTransitionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/interactions/input': {
-      id: '/interactions/input'
-      path: '/interactions/input'
-      fullPath: '/interactions/input'
-      preLoaderRoute: typeof InteractionsInputRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/interactions/hover': {
       id: '/interactions/hover'
       path: '/interactions/hover'
@@ -133,15 +139,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InteractionsHoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flows/onboarding': {
+      id: '/flows/onboarding'
+      path: '/flows/onboarding'
+      fullPath: '/flows/onboarding'
+      preLoaderRoute: typeof FlowsOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flows/checkout': {
+      id: '/flows/checkout'
+      path: '/flows/checkout'
+      fullPath: '/flows/checkout'
+      preLoaderRoute: typeof FlowsCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  FlowsCheckoutRoute: FlowsCheckoutRoute,
+  FlowsOnboardingRoute: FlowsOnboardingRoute,
   InteractionsHoverRoute: InteractionsHoverRoute,
-  InteractionsInputRoute: InteractionsInputRoute,
   InteractionsViewTransitionsRoute: InteractionsViewTransitionsRoute,
   SurfaceModalRoute: SurfaceModalRoute,
-  UiCheckoutRoute: UiCheckoutRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
