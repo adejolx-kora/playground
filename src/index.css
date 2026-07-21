@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(kora);
 @import "@korapay/react/styles.css";
 @source "../node_modules/@korapay/react/dist/**/*.{js,mjs,jsx,tsx}";
 
@@ -23,12 +23,12 @@
 }
 
 @theme {
-  --font-sans: "Geist Variable", sans-serif;
+  /* --font-sans: "Geist Variable", sans-serif; */
   --animate-vibrate: vibrate 0.6s ease-in-out;
 }
 
 [data-invalid="true"] {
-  @apply animate-vibrate;
+  @apply kora:animate-vibrate;
 }
 
 @utility el-grid-* {
