@@ -530,7 +530,7 @@ function RouteComponent() {
   const handleChangeView = (newView: ViewType) => setView(newView);
 
   return (
-    <div className="kora:grid kora:min-h-0 kora:grow kora:[place-content:safe_center] kora:gap-4 kora:overflow-y-auto kora:bg-neutral-200 kora:p-4">
+    <div className="kora:grid kora:min-h-0 kora:grow kora:place-content-center-safe kora:gap-4 kora:overflow-y-auto kora:bg-neutral-200 kora:p-4">
       {view === "initial" && (
         <>
           <div className="kora:flex kora:flex-col kora:items-center kora:gap-1">
