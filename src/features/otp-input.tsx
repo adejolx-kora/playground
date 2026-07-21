@@ -151,7 +151,10 @@ type OTPInputGroupProps = React.ComponentPropsWithoutRef<"div">;
 function OTPInputGroup({ className, ...props }: OTPInputGroupProps) {
   return (
     <div
-      className={cn("flex w-full items-center gap-1.5 sm:gap-2", className)}
+      className={cn(
+        "kora:flex kora:w-full kora:items-center kora:gap-1.5 kora:sm:gap-2",
+        className,
+      )}
       {...props}
     />
   );
@@ -271,7 +274,7 @@ function OTPInputSlot({
       autoComplete={index === 0 ? "one-time-code" : "off"}
       disabled={disabled || props.disabled}
       className={cn(
-        "aspect-square max-w-12 min-w-0 flex-1 px-0 text-center text-label-md tabular-nums",
+        "kora:aspect-square kora:max-w-12 kora:min-w-0 kora:flex-1 kora:px-0 kora:text-center kora:text-label-md kora:tabular-nums",
         className,
       )}
     />
@@ -284,7 +287,7 @@ function OTPInputSeparator({ className, ...props }: OTPInputSeparatorProps) {
   return (
     <span
       aria-hidden
-      className={cn("text-content-default-tertiary", className)}
+      className={cn("kora:text-content-default-tertiary", className)}
       {...props}
     />
   );

@@ -6,7 +6,7 @@ export const Route = createFileRoute("/interactions/view-transitions")({
 
 function RouteComponent() {
   return (
-    <div className="space-y-4 px-6 py-4">
+    <div className="kora:space-y-4 kora:px-6 kora:py-4">
       Hello "/interactions/view-transitions"!
     </div>
   );

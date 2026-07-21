@@ -14,8 +14,8 @@ export const Route = createFileRoute("/surface/modal")({
 // eslint-disable-next-line react-refresh/only-export-components
 function RouteComponent() {
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-3xl items-center px-6 py-8">
-      <Card className="w-full">
+    <div className="kora:mx-auto kora:flex kora:min-h-full kora:w-full kora:max-w-3xl kora:items-center kora:px-6 kora:py-8">
+      <Card className="kora:w-full">
         <CardHeader>
           <CardTitle>Surface Modal</CardTitle>
           <CardDescription>
@@ -23,7 +23,7 @@ function RouteComponent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-body-md text-content-default-secondary">
+          <p className="kora:text-body-md kora:text-content-default-secondary">
             This space is ready for the next modal example.
           </p>
         </CardContent>

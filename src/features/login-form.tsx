@@ -11,13 +11,15 @@ import {
 
 export function LoginForm() {
   return (
-    <Card className="mx-auto w-full max-w-md ring-0">
+    <Card className="kora:mx-auto kora:w-full kora:max-w-md kora:ring-0">
       <CardContent>
-        <form className="flex flex-col gap-6">
+        <form className="kora:flex kora:flex-col kora:gap-6">
           <FieldGroup>
-            <div className="flex flex-col items-center gap-1 text-center">
-              <h1 className="text-2xl font-bold">Login to your account</h1>
-              <p className="text-sm text-balance text-content-default-tertiary">
+            <div className="kora:flex kora:flex-col kora:items-center kora:gap-1 kora:text-center">
+              <h1 className="kora:text-2xl kora:font-bold">
+                Login to your account
+              </h1>
+              <p className="kora:text-sm kora:text-balance kora:text-content-default-tertiary">
                 Enter your email below to login to your account.
               </p>
             </div>
@@ -31,11 +33,11 @@ export function LoginForm() {
               />
             </Field>
             <Field>
-              <div className="flex items-center">
+              <div className="kora:flex kora:items-center">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <a
                   href="#"
-                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                  className="kora:ml-auto kora:text-sm kora:underline-offset-4 kora:hover:underline"
                 >
                   Forgot your password?
                 </a>
@@ -48,9 +50,9 @@ export function LoginForm() {
             <Field>
               <Button type="submit">Login</Button>
             </Field>
-            <FieldDescription className="text-center">
+            <FieldDescription className="kora:text-center">
               Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <a href="#" className="kora:underline kora:underline-offset-4">
                 Sign up
               </a>
             </FieldDescription>

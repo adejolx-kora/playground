@@ -93,7 +93,10 @@ export function NumericInputRoot({
     <NumericInputUiContext.Provider value={uiContextValue}>
       <NumericInputValueContext.Provider value={valueContextValue}>
         <InputGroup
-          className={cn("h-10 w-full max-w-xs overflow-hidden", className)}
+          className={cn(
+            "kora:h-10 kora:w-full kora:max-w-xs kora:overflow-hidden",
+            className,
+          )}
           data-slot="numeric-stepper-root"
           dir={uiContextValue.dir}
           data-dir={uiContextValue.dir}
@@ -255,7 +258,10 @@ export const NumericInputField = React.forwardRef<
 
         props.onBlur?.(event);
       }}
-      className={cn("min-w-0 flex-1 text-center tabular-nums", className)}
+      className={cn(
+        "kora:min-w-0 kora:flex-1 kora:text-center kora:tabular-nums",
+        className,
+      )}
     />
   );
 });
@@ -287,8 +293,8 @@ export function NumericInputControls({
       {...props}
       data-slot="numeric-stepper-controls"
       className={cn(
-        "flex h-full shrink-0 flex-col overflow-hidden border-input-border",
-        dir === "rtl" ? "border-r" : "border-l",
+        "kora:flex kora:h-full kora:shrink-0 kora:flex-col kora:overflow-hidden kora:border-input-border",
+        dir === "rtl" ? "kora:border-r" : "kora:border-l",
         className,
       )}
     />
@@ -355,7 +361,7 @@ function NumericInputStepButton({
         }
       }}
       className={cn(
-        "h-1/2 min-h-0 rounded-none border-0 border-t border-input-border bg-transparent p-0 text-input-text-secondary shadow-none focus-visible:ring-0",
+        "kora:h-1/2 kora:min-h-0 kora:rounded-none kora:border-0 kora:border-t kora:border-input-border kora:bg-transparent kora:p-0 kora:text-input-text-secondary kora:shadow-none kora:focus-visible:ring-0",
         className,
       )}
     >
@@ -377,7 +383,7 @@ export function NumericInputDecrement({
       defaultAriaLabel="Decrease value"
       icon={<CaretDownIcon weight="bold" />}
       className={cn(
-        "h-1/2 min-h-0 rounded-none border-0 border-t border-input-border bg-transparent p-0 text-input-text-secondary shadow-none focus-visible:ring-0",
+        "kora:h-1/2 kora:min-h-0 kora:rounded-none kora:border-0 kora:border-t kora:border-input-border kora:bg-transparent kora:p-0 kora:text-input-text-secondary kora:shadow-none kora:focus-visible:ring-0",
         className,
       )}
     >
@@ -399,7 +405,7 @@ export function NumericInputIncrement({
       defaultAriaLabel="Increase value"
       icon={<CaretUpIcon weight="bold" />}
       className={cn(
-        "h-1/2 min-h-0 rounded-none border-0 bg-transparent p-0 text-input-text-secondary shadow-none focus-visible:ring-0",
+        "kora:h-1/2 kora:min-h-0 kora:rounded-none kora:border-0 kora:bg-transparent kora:p-0 kora:text-input-text-secondary kora:shadow-none kora:focus-visible:ring-0",
         className,
       )}
     >

@@ -24,6 +24,7 @@ const spacingScale = [
 const marginScale = ["auto", ...spacingScale];
 
 const twMerge = extendTailwindMerge({
+  prefix: "kora",
   extend: {
     classGroups: {
       "border-w": [
