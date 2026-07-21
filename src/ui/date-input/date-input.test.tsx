@@ -60,4 +60,18 @@ describe("DateInput", () => {
 
     expect(screen.getByRole("textbox").getAttribute("value")).toBe("");
   });
+
+  it("keeps mouse interaction with the calendar trigger from blurring the input", () => {
+    render(
+      <DateInput
+        aria-label="Date of birth"
+        value={undefined}
+        onValueChange={vi.fn()}
+      />,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Select date" });
+
+    expect(fireEvent.mouseDown(trigger)).toBe(false);
+  });
 });

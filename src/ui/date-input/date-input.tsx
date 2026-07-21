@@ -102,6 +102,9 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                   size="icon-xs"
                   variant="primary-ghost"
                   aria-label={triggerAriaLabel}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                  }}
                 >
                   <CalendarIcon aria-hidden />
                   <span className="kora:sr-only">{triggerAriaLabel}</span>
