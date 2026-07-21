@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
   Separator,
-  Textarea,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -25,9 +24,10 @@ import {
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
+  InputGroupTextarea,
 } from "@korapay/react/molecules";
 import { GlobeIcon, InfoIcon } from "@phosphor-icons/react";
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller, type UseFormReturn, useWatch } from "react-hook-form";
 
 import { DateInput } from "@/ui/date-input";
 import { MultiStepNext, MultiStepPanel } from "@/ui/multistep/multistep";
@@ -58,6 +58,8 @@ const lgaItems = [
   { label: "Surulere", value: "surulere" },
 ];
 
+const businessDescriptionMaxLength = 500;
+
 type BusinessInformationStepProps = {
   form: UseFormReturn<SignupValues>;
 };
@@ -66,6 +68,10 @@ export function BusinessInformationStep({
   form,
 }: BusinessInformationStepProps) {
   const { errors } = form.formState;
+  const businessDescription = useWatch({
+    control: form.control,
+    name: "businessDescription",
+  });
 
   return (
     <MultiStepPanel stepId="business-information">
@@ -113,18 +119,35 @@ export function BusinessInformationStep({
               <FieldLabel htmlFor="signup-business-description">
                 Describe Your Business
               </FieldLabel>
-              <Textarea
-                id="signup-business-description"
-                className="kora:min-h-28 kora:resize-none"
-                aria-invalid={Boolean(errors.businessDescription)}
-                {...form.register("businessDescription", {
-                  required: "Describe your business.",
-                  minLength: {
-                    value: 10,
-                    message: "Use at least 10 characters.",
-                  },
-                })}
-              />
+              <InputGroup>
+                <InputGroupTextarea
+                  id="signup-business-description"
+                  className="kora:min-h-28"
+                  maxLength={businessDescriptionMaxLength}
+                  aria-describedby="signup-business-description-count"
+                  aria-invalid={Boolean(errors.businessDescription)}
+                  {...form.register("businessDescription", {
+                    required: "Describe your business.",
+                    minLength: {
+                      value: 10,
+                      message: "Use at least 10 characters.",
+                    },
+                    maxLength: {
+                      value: businessDescriptionMaxLength,
+                      message: `Use no more than ${businessDescriptionMaxLength} characters.`,
+                    },
+                  })}
+                />
+                <InputGroupAddon align="block-end" className="kora:justify-end">
+                  <InputGroupText
+                    id="signup-business-description-count"
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    {businessDescription.length}/{businessDescriptionMaxLength}
+                  </InputGroupText>
+                </InputGroupAddon>
+              </InputGroup>
               <FieldError>{errors.businessDescription?.message}</FieldError>
             </Field>
 
